@@ -7,10 +7,10 @@ const router = express.Router();
 // WHY: Get topics (Filtered by Subject) - For Calendar View
 router.get('/', async (req, res) => {
     try {
-        const { subjectId } = req.query;
-        if (!subjectId) return res.status(400).json({ success: false, message: 'Subject ID required' });
+        const { subject } = req.query;
+        if (!subject) return res.status(400).json({ success: false, message: 'Subject ID required' });
 
-        const topics = await Topic.find({ subjectId }).sort({ assignedDate: 1 });
+        const topics = await Topic.find({ subject }).sort({ assignedDate: 1 });
         res.json({ success: true, data: topics });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -20,10 +20,10 @@ router.get('/', async (req, res) => {
 // WHY: Add topic to a specific date
 router.post('/', async (req, res) => {
     try {
-        const { subjectId, name, assignedDate } = req.body;
+        const { subject, name, assignedDate } = req.body;
         // Allows multiple topics per day. "AIR 1" mindset: Do more.
         const topic = await Topic.create({
-            subjectId,
+            subject,
             name,
             assignedDate
         });
@@ -57,7 +57,7 @@ router.patch('/:id', async (req, res) => {
                 if (!existing) {
                     await Revision.create({
                         topic: topic._id,
-                        subject: topic.subjectId,
+                        subject: topic.subject,
                         scheduledDate: nextRevisionDate,
                         revisionNumber: (topic.revisionCount || 0) + 1
                     });

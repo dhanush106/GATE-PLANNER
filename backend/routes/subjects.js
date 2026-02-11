@@ -175,8 +175,8 @@ router.delete('/:id', async (req, res) => {
         const subjectId = req.params.id;
         await Subject.findByIdAndDelete(subjectId);
         // Cascade delete topics?
-        await Topic.deleteMany({ subjectId });
-        await DailyStats.deleteMany({ subjectId });
+        await Topic.deleteMany({ subject: subjectId });
+        await DailyStats.deleteMany({ subject: subjectId });
         // Revisions?
         // await Revision.deleteMany({ subject: subjectId }); // If imported
 

@@ -6,9 +6,9 @@ const router = express.Router();
 // WHY: Fetch history for graphs
 router.get('/', async (req, res) => {
     try {
-        const { subjectId, startDate, endDate } = req.query;
+        const { subject, startDate, endDate } = req.query;
         const query = {};
-        if (subjectId) query.subjectId = subjectId;
+        if (subject) query.subject = subject;
 
         if (startDate || endDate) {
             query.date = {};

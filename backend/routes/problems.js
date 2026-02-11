@@ -10,9 +10,9 @@ router.post('/', async (req, res) => {
     try {
         const problem = await ProblemSolved.create(req.body);
 
-        // WHY: Update topic's problems count if video (topic) is specified
-        if (problem.video) {
-            await Topic.findByIdAndUpdate(problem.video, {
+        // WHY: Update topic's problems count if topic is specified
+        if (problem.topic) {
+            await Topic.findByIdAndUpdate(problem.topic, {
                 $inc: { problemsSolved: problem.problemCount }
             });
         }
@@ -29,10 +29,10 @@ router.post('/', async (req, res) => {
     }
 });
 
-// WHY: Get problems for a specific topic (video)
-router.get('/video/:videoId', async (req, res) => {
+// WHY: Get problems for a specific topic
+router.get('/topic/:topicId', async (req, res) => {
     try {
-        const problems = await ProblemSolved.find({ video: req.params.videoId })
+        const problems = await ProblemSolved.find({ topic: req.params.topicId })
             .populate('subject')
             .sort({ dateSolved: -1 });
 
@@ -49,10 +49,10 @@ router.get('/video/:videoId', async (req, res) => {
 });
 
 // WHY: Get problems for a specific subject
-router.get('/subject/:subjectId', async (req, res) => {
+router.get('/subject/:subject', async (req, res) => {
     try {
-        const problems = await ProblemSolved.find({ subject: req.params.subjectId })
-            .populate('video')
+        const problems = await ProblemSolved.find({ subject: req.params.subject })
+            .populate('topic')
             .sort({ dateSolved: -1 });
 
         res.json({

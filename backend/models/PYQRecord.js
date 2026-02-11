@@ -4,11 +4,11 @@ import { PYQ_STATUS } from '../config/constants.js';
 // WHY: PYQ (Previous Year Questions) tracking is critical for GATE preparation
 // Each PYQ record tracks a specific question attempt
 const pyqRecordSchema = new mongoose.Schema({
-    video: {
+    topic: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Video',
+        ref: 'Topic',
         required: true
-        // WHY: Which video/topic this PYQ belongs to
+        // WHY: Which topic this PYQ belongs to
     },
     subject: {
         type: mongoose.Schema.Types.ObjectId,
@@ -46,8 +46,8 @@ const pyqRecordSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// WHY: Indexes for efficient queries by video, subject, and year
-pyqRecordSchema.index({ video: 1 });
+// WHY: Indexes for efficient queries by topic, subject, and year
+pyqRecordSchema.index({ topic: 1 });
 pyqRecordSchema.index({ subject: 1 });
 pyqRecordSchema.index({ year: 1 });
 pyqRecordSchema.index({ status: 1 });

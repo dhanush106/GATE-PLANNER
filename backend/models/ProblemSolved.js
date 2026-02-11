@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 // WHY: Track practice problems solved per video/subject
 // This is separate from PYQs - these are general practice problems
 const problemSolvedSchema = new mongoose.Schema({
-    video: {
+    topic: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Video'
-        // WHY: Optional - problems can be linked to a specific video
+        ref: 'Topic'
+        // WHY: Optional - problems can be linked to a specific topic
     },
     subject: {
         type: mongoose.Schema.Types.ObjectId,
@@ -38,7 +38,7 @@ const problemSolvedSchema = new mongoose.Schema({
 // WHY: Indexes for efficient queries by date, subject, and video
 problemSolvedSchema.index({ dateSolved: 1 });
 problemSolvedSchema.index({ subject: 1 });
-problemSolvedSchema.index({ video: 1 });
+problemSolvedSchema.index({ topic: 1 });
 
 const ProblemSolved = mongoose.model('ProblemSolved', problemSolvedSchema);
 

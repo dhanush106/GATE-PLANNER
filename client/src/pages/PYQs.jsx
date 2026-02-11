@@ -23,15 +23,15 @@ const PYQs = () => {
     // Form State
     const [newPYQ, setNewPYQ] = useState({
         subject: '',
-        video: '',
-        year: '', // e.g., 2024
-        questionIdentifier: '', // e.g., Q15
+        topic: '', // Changed from video
+        year: '',
+        questionIdentifier: '',
         status: 'Attempted',
         notes: ''
     });
 
-    // Derived state for filtered videos (topics) in form
-    const formVideos = videos.filter(v => v.subject._id === newPYQ.subject);
+    // Derived state for filtered topics in form
+    const formTopics = topics.filter(t => t.subject._id === newPYQ.subject);
 
     useEffect(() => {
         fetchData();
@@ -64,11 +64,11 @@ const PYQs = () => {
         }
     };
 
-    const handleSubjectFilterChange = async (subjectId) => {
-        setFilterSubject(subjectId);
-        if (subjectId) {
+    const handleSubjectFilterChange = async (subject) => {
+        setFilterSubject(subject);
+        if (subject) {
             try {
-                const res = await axios.get(`http://localhost:5000/api/pyqs/subject/${subjectId}`);
+                const res = await axios.get(`http://localhost:5000/api/pyqs/subject/${subject}`);
                 setPyqs(res.data.data);
             } catch (error) { console.error(error); }
         } else {
@@ -81,7 +81,7 @@ const PYQs = () => {
         try {
             await axios.post('http://localhost:5000/api/pyqs', newPYQ);
             setIsModalOpen(false);
-            setNewPYQ({ subject: '', video: '', year: '', questionIdentifier: '', status: 'Attempted', notes: '' });
+            setNewPYQ({ subject: '', topic: '', year: '', questionIdentifier: '', status: 'Attempted', notes: '' });
             // Refresh stats and list
             const statsRes = await axios.get('http://localhost:5000/api/pyqs/stats');
             setStats(statsRes.data.data);
@@ -155,7 +155,7 @@ const PYQs = () => {
                                         {pyq.year}
                                     </span>
                                     <span className="text-sm font-medium text-slate-200">{pyq.questionIdentifier}</span>
-                                    <span className="text-xs text-slate-500">• {pyq.video?.title || 'Unknown Topic'}</span>
+                                    <span className="text-xs text-slate-500">• {pyq.topic?.name || 'Unknown Topic'}</span>
                                 </div>
                                 {pyq.notes && <p className="text-xs text-slate-500 italic mt-1">{pyq.notes}</p>}
                             </div>
@@ -208,13 +208,13 @@ const PYQs = () => {
                         <select
                             required
                             disabled={!newPYQ.subject}
-                            value={newPYQ.video}
-                            onChange={(e) => setNewPYQ({ ...newPYQ, video: e.target.value })}
+                            value={newPYQ.topic}
+                            onChange={(e) => setNewPYQ({ ...newPYQ, topic: e.target.value })}
                             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 disabled:opacity-50"
                         >
                             <option value="">Select Topic</option>
-                            {formVideos.map(v => (
-                                <option key={v._id} value={v._id}>{v.title}</option>
+                            {formTopics.map(t => (
+                                <option key={t._id} value={t._id}>{t.name}</option>
                             ))}
                         </select>
                     </div>

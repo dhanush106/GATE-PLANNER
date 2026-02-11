@@ -39,7 +39,7 @@ const SubjectBoard = () => {
         try {
             const [subRes, topicsRes] = await Promise.all([
                 axios.get(`http://localhost:5000/api/subjects/${id}`),
-                axios.get(`http://localhost:5000/api/topics?subjectId=${id}`)
+                axios.get(`http://localhost:5000/api/topics?subject=${id}`)
             ]);
             setSubject(subRes.data.data);
             setTopics(topicsRes.data.data);
@@ -96,7 +96,7 @@ const SubjectBoard = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/api/topics', {
-                subjectId: id,
+                subject: id,
                 name: newTopicName,
                 assignedDate: selectedDate
             });

@@ -7,18 +7,16 @@ import { TrendingUp, Target } from 'lucide-react';
 
 const ProgressGraphs = ({ problemsData, subjectData }) => {
 
+    // Custom Tooltip for dark mode
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-elevated-bg border border-accent-emerald/20 p-4 rounded-xl shadow-2xl backdrop-blur-md">
-                    <p className="text-text-muted font-black text-[10px] mb-2 uppercase tracking-widest">{label}</p>
+                <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl">
+                    <p className="text-slate-300 font-medium text-xs mb-1">{label}</p>
                     {payload.map((entry, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                            <p className="text-sm font-black text-text-main">
-                                {entry.name}: <span className="text-accent-emerald">{entry.value}</span>
-                            </p>
-                        </div>
+                        <p key={index} className="text-sm font-bold" style={{ color: entry.color }}>
+                            {entry.name}: {entry.value}
+                        </p>
                     ))}
                 </div>
             );
@@ -27,47 +25,43 @@ const ProgressGraphs = ({ problemsData, subjectData }) => {
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* PROBLEMS SOLVED GRAPH */}
-            <div className="bg-black/20 border border-white/5 rounded-2xl p-8 group hover:border-accent-emerald/20 transition-all">
-                <h3 className="text-text-secondary font-black text-[10px] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
-                    <div className="p-1.5 bg-accent-emerald/10 rounded-lg">
-                        <TrendingUp className="w-4 h-4 text-accent-emerald" />
-                    </div>
-                    Execution Velocity
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <h3 className="text-slate-300 font-medium mb-6 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-500" />
+                    Problems Solved Consistency
                 </h3>
-                <div className="h-[250px] w-full">
+                <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={problemsData} margin={{ top: 5, right: 10, bottom: 5, left: -30 }}>
-                            <CartesianGrid strokeDasharray="5 5" stroke="#182320" vertical={false} />
+                        <LineChart data={problemsData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
                             <XAxis
                                 dataKey="date"
-                                stroke="#64748B"
-                                fontSize={10}
+                                stroke="#64748b"
+                                fontSize={12}
                                 tickLine={false}
                                 axisLine={false}
-                                tick={{ fontWeight: 700 }}
                                 tickFormatter={(str) => {
                                     const date = new Date(str);
                                     return `${date.getDate()}/${date.getMonth() + 1}`;
                                 }}
                             />
                             <YAxis
-                                stroke="#64748B"
-                                fontSize={10}
+                                stroke="#64748b"
+                                fontSize={12}
                                 tickLine={false}
                                 axisLine={false}
-                                tick={{ fontWeight: 700 }}
                             />
-                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#00FF9C', strokeWidth: 1 }} />
+                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#334155' }} />
                             <Line
                                 type="monotone"
                                 dataKey="count"
                                 name="Problems"
-                                stroke="#00FF9C"
-                                strokeWidth={3}
-                                dot={{ fill: '#00FF9C', r: 3, strokeWidth: 0 }}
-                                activeDot={{ r: 6, fill: '#00FF9C', stroke: '#0B0F0E', strokeWidth: 3 }}
+                                stroke="#10b981"
+                                strokeWidth={2}
+                                dot={{ fill: '#10b981', r: 3 }}
+                                activeDot={{ r: 6, fill: '#34d399' }}
                             />
                         </LineChart>
                     </ResponsiveContainer>
@@ -75,31 +69,29 @@ const ProgressGraphs = ({ problemsData, subjectData }) => {
             </div>
 
             {/* SUBJECT PROGRESS GRAPH */}
-            <div className="bg-black/20 border border-white/5 rounded-2xl p-8 group hover:border-accent-emerald/20 transition-all">
-                <h3 className="text-text-secondary font-black text-[10px] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
-                    <div className="p-1.5 bg-accent-emerald/10 rounded-lg">
-                        <Target className="w-4 h-4 text-accent-emerald" />
-                    </div>
-                    Coverage Matrix
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <h3 className="text-slate-300 font-medium mb-6 flex items-center gap-2">
+                    <Target className="w-4 h-4 text-blue-500" />
+                    Subject Completion Status
                 </h3>
-                <div className="h-[250px] w-full">
+                <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={subjectData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="5 5" stroke="#182320" horizontal={false} />
-                            <XAxis type="number" hide />
+                        <BarChart data={subjectData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
+                            <XAxis type="number" stroke="#64748b" fontSize={12} hide />
                             <YAxis
                                 dataKey="subject"
                                 type="category"
-                                stroke="#E6F1EC"
-                                fontSize={10}
-                                width={80}
+                                stroke="#94a3b8"
+                                fontSize={11}
+                                width={100}
                                 tickLine={false}
                                 axisLine={false}
-                                tick={{ fontWeight: 800 }}
                             />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#182320', opacity: 0.4 }} />
-                            <Bar dataKey="completed" name="Mastered" stackId="a" fill="#00FF9C" radius={[4, 0, 0, 4]} barSize={12} />
-                            <Bar dataKey="total" name="Horizon" stackId="a" fill="#182320" radius={[0, 4, 4, 0]} barSize={12} />
+                            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1e293b', opacity: 0.5 }} />
+                            <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                            <Bar dataKey="completed" name="Completed" stackId="a" fill="#3b82f6" radius={[0, 0, 0, 0]} barSize={20} />
+                            <Bar dataKey="total" name="Total Planned" stackId="a" fill="#1e293b" radius={[0, 4, 4, 0]} barSize={20} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

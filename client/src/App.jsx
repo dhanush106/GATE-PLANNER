@@ -4,7 +4,7 @@ import {
   Route,
   Navigate
 } from 'react-router-dom';
-import Sidebar from './components/Sidebar'; // New Sidebar
+import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -15,12 +15,10 @@ import Mocks from './pages/Mocks';
 import PYQs from './pages/PYQs';
 
 const AppLayout = ({ children }) => (
-  <div className="flex min-h-screen bg-base-bg text-text-main overflow-hidden">
-    <Sidebar />
-    <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden custom-scrollbar bg-section-bg/30">
-      <div className="p-6 md:p-10">
-        {children}
-      </div>
+  <div className="min-h-screen bg-slate-950 text-slate-200 pt-16">
+    <Navbar />
+    <main className="max-w-dvw mx-auto p-4 sm:p-6 lg:p-8">
+      {children}
     </main>
   </div>
 );

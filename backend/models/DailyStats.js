@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // WHY: Granular history tracking.
 // Allows generating "Activity Heatmaps" and specific day history.
 const dailyStatsSchema = new mongoose.Schema({
-    subjectId: {
+    subject: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
         required: true
@@ -22,7 +22,7 @@ const dailyStatsSchema = new mongoose.Schema({
 });
 
 // WHY: Ensure one entry per subject per day
-dailyStatsSchema.index({ subjectId: 1, date: 1 }, { unique: true });
+dailyStatsSchema.index({ subject: 1, date: 1 }, { unique: true });
 
 const DailyStats = mongoose.model('DailyStats', dailyStatsSchema);
 export default DailyStats;

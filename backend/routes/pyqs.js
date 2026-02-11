@@ -10,21 +10,12 @@ router.post('/', async (req, res) => {
     try {
         const pyq = await PYQRecord.create(req.body);
 
-        // WHY: Update topic's PYQ counts (Changed from video)
-        // Note: Field in PYQRecord is likely still 'video' unless I change it.
-        // I'll keep it as 'video' in DB but refer to it as topic logic.
-        // Actually, for consistency I should assume the request sends 'video' ID which is actually a topic ID.
-        const topic = await Topic.findById(pyq.video);
+        // WHY: Update topic's PYQ counts
+        const topic = await Topic.findById(pyq.topic);
         if (topic) {
             topic.pyqsAttempted += 1;
             if (pyq.status === PYQ_STATUS.SOLVED) {
                 topic.pyqsSolved += 1;
-            } else if (pyq.status === PYQ_STATUS.WRONG) {
-                // Topic model doesn't have pyqsWrong explicitly defined in my previous step, 
-                // but Mongoose allows it if schema is loose or I missed it.
-                // Looking back at Topic.js: "pyqsSolved", "pyqsAttempted". It didn't have "pyqsWrong".
-                // I'll skip pyqsWrong update or add it? Topic.js didn't have it.
-                // I'll just update attempted/solved.
             }
             await topic.save();
         }
@@ -41,11 +32,10 @@ router.post('/', async (req, res) => {
     }
 });
 
-// WHY: Get PYQs for a specific topic (Changed from video)
-router.get('/video/:videoId', async (req, res) => {
+// WHY: Get PYQs for a specific topic
+router.get('/topic/:topicId', async (req, res) => {
     try {
-        // Keeping route param as videoId for backward compatibility if frontend sends it
-        const pyqs = await PYQRecord.find({ video: req.params.videoId })
+        const pyqs = await PYQRecord.find({ topic: req.params.topicId })
             .populate('subject')
             .sort({ year: -1, dateAttempted: -1 });
 
@@ -62,10 +52,10 @@ router.get('/video/:videoId', async (req, res) => {
 });
 
 // WHY: Get PYQs for a specific subject
-router.get('/subject/:subjectId', async (req, res) => {
+router.get('/subject/:subject', async (req, res) => {
     try {
-        const pyqs = await PYQRecord.find({ subject: req.params.subjectId })
-            .populate('video') // This populates Topic now
+        const pyqs = await PYQRecord.find({ subject: req.params.subject })
+            .populate('topic')
             .sort({ year: -1, dateAttempted: -1 });
 
         res.json({
@@ -101,7 +91,7 @@ router.put('/:id', async (req, res) => {
 
         // WHY: Update topic counts if status changed
         if (oldPYQ && oldPYQ.status !== newStatus) {
-            const topic = await Topic.findById(pyq.video);
+            const topic = await Topic.findById(pyq.topic);
             if (topic) {
                 // Decrement old status count
                 if (oldPYQ.status === PYQ_STATUS.SOLVED) topic.pyqsSolved -= 1;
