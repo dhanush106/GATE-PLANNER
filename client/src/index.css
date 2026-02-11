@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #3b82f6;
+  /* Blue 500 */
+  --color-brand-secondary: #0f172a;
+  /* Slate 900 */
+  --color-brand-accent: #f59e0b;
+  /* Amber 500 */
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-950 text-slate-200 antialiased min-h-screen font-sans;
+}
+
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-600;
+}
+
+/* BENTO GRID UTILITIES */
+.bento-grid {
+  @apply grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4;
+}
+
+.bento-card {
+  @apply bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all duration-200 hover:border-slate-700;
+}
+
+/* STATUS BADGES */
+.status-badge {
+  @apply px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider;
+}
+
+.status-not-started {
+  @apply bg-slate-800 text-slate-400 border border-slate-700;
+}
+
+.status-watching {
+  @apply bg-blue-900/30 text-blue-400 border border-blue-800/50;
+}
+
+.status-completed {
+  @apply bg-emerald-900/30 text-emerald-400 border border-emerald-800/50;
+}
+
+.status-revised {
+  @apply bg-purple-900/30 text-purple-400 border border-purple-800/50;
+}
+
+.status-weak {
+  @apply bg-red-900/30 text-red-400 border border-red-800/50;
+}
