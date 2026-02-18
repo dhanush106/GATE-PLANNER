@@ -27,7 +27,7 @@ const Sidebar = () => {
     return (
         <aside
             className={cn(
-                "relative z-40 flex flex-col h-screen glass transition-all duration-300 ease-in-out hidden md:flex",
+                "relative z-40 flex flex-col h-screen glass transition-all duration-300 ease-in-out md:flex",
                 isCollapsed ? "w-20" : "w-64"
             )}
             style={{ borderRight: '1px solid var(--glass-border)' }}
