@@ -94,37 +94,51 @@ const PYQs = () => {
         }
     };
 
-    if (loading) return <div className="text-white p-8">Loading PYQs...</div>;
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-[60vh]" style={{ color: 'var(--foreground)' }}>
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+                <p className="text-muted-foreground font-medium animate-pulse">Loading PYQs...</p>
+            </div>
+        </div>
+    );
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                    <BrainCircuit className="w-8 h-8 text-emerald-500" />
-                    PYQ Tracker
-                </h1>
+        <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-12">
+
+            {/* Header */}
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-xl">
+                            <BrainCircuit className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                        </div>
+                        PYQ Tracker
+                    </h1>
+                    <p className="text-muted-foreground text-sm mt-1">Track previous year questions by subject and topic.</p>
+                </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
+                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 rounded-2xl flex items-center justify-center gap-2 font-black shadow-glow transition-all hover:scale-105 active:scale-95"
                 >
                     <Plus className="w-5 h-5" /> Log Question
                 </button>
-            </div>
+            </header>
 
             {/* STATS SUMMARY */}
             {stats && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                        <div className="text-slate-500 text-xs uppercase">Total Attempted</div>
-                        <div className="text-3xl font-bold text-white">{stats.totalAttempted}</div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="bento-card">
+                        <div className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-2">Total Attempted</div>
+                        <div className="text-3xl font-black">{stats.totalAttempted}</div>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                        <div className="text-slate-500 text-xs uppercase">Solved Correctly</div>
-                        <div className="text-3xl font-bold text-emerald-500">{stats.totalSolved}</div>
+                    <div className="bento-card">
+                        <div className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-2">Solved Correctly</div>
+                        <div className="text-3xl font-black text-emerald-500">{stats.totalSolved}</div>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                        <div className="text-slate-500 text-xs uppercase">Win Rate</div>
-                        <div className="text-3xl font-bold text-blue-500">
+                    <div className="bento-card col-span-2 sm:col-span-1">
+                        <div className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-2">Win Rate</div>
+                        <div className="text-3xl font-black text-primary">
                             {stats.totalAttempted > 0 ? Math.round((stats.totalSolved / stats.totalAttempted) * 100) : 0}%
                         </div>
                     </div>
@@ -132,13 +146,14 @@ const PYQs = () => {
             )}
 
             {/* FILTERS & LIST */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <div className="flex items-center gap-4 mb-6">
-                    <Filter className="w-5 h-5 text-slate-400" />
+            <div className="bento-card">
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
                     <select
                         value={filterSubject}
                         onChange={(e) => handleSubjectFilterChange(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                        className="flex-1 min-w-0 neuo-input px-3 py-2 text-sm"
+                        style={{ color: 'var(--foreground)' }}
                     >
                         {subjects.map(s => (
                             <option key={s._id} value={s._id}>{s.name}</option>
@@ -148,23 +163,26 @@ const PYQs = () => {
 
                 <div className="space-y-3">
                     {pyqs.map((pyq) => (
-                        <div key={pyq._id} className="flex justify-between items-center bg-slate-950/50 border border-slate-800 p-4 rounded-lg">
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-xs font-bold bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">
+                        <div
+                            key={pyq._id}
+                            className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-secondary/30 border border-border p-4 rounded-xl hover:border-primary/20 transition-all"
+                        >
+                            <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <span className="text-xs font-bold bg-secondary text-foreground px-2 py-0.5 rounded-lg border border-border">
                                         {pyq.year}
                                     </span>
-                                    <span className="text-sm font-medium text-slate-200">{pyq.questionIdentifier}</span>
-                                    <span className="text-xs text-slate-500">• {pyq.topic?.name || 'Unknown Topic'}</span>
+                                    <span className="text-sm font-bold truncate">{pyq.questionIdentifier}</span>
+                                    <span className="text-xs text-muted-foreground truncate">• {pyq.topic?.name || 'Unknown Topic'}</span>
                                 </div>
-                                {pyq.notes && <p className="text-xs text-slate-500 italic mt-1">{pyq.notes}</p>}
+                                {pyq.notes && <p className="text-xs text-muted-foreground italic mt-1">{pyq.notes}</p>}
                             </div>
 
                             <div className={cn(
-                                "px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5",
-                                pyq.status === 'Solved' && "bg-emerald-900/30 text-emerald-400",
-                                pyq.status === 'Wrong' && "bg-red-900/30 text-red-400",
-                                pyq.status === 'Attempted' && "bg-blue-900/30 text-blue-400"
+                                "px-3 py-1.5 rounded-full text-xs font-bold uppercase flex items-center gap-1.5 shrink-0 self-start sm:self-center",
+                                pyq.status === 'Solved' && "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20",
+                                pyq.status === 'Wrong' && "bg-destructive/10 text-destructive border border-destructive/20",
+                                pyq.status === 'Attempted' && "bg-primary/10 text-primary border border-primary/20"
                             )}>
                                 {pyq.status === 'Solved' && <CheckCircle2 className="w-3.5 h-3.5" />}
                                 {pyq.status === 'Wrong' && <XCircle className="w-3.5 h-3.5" />}
@@ -174,7 +192,7 @@ const PYQs = () => {
                         </div>
                     ))}
                     {pyqs.length === 0 && (
-                        <div className="text-center py-8 text-slate-500 italic">
+                        <div className="text-center py-12 text-muted-foreground italic">
                             No PYQs logged for this subject yet.
                         </div>
                     )}
@@ -189,12 +207,13 @@ const PYQs = () => {
             >
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Subject</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Subject</label>
                         <select
                             required
                             value={newPYQ.subject}
                             onChange={(e) => setNewPYQ({ ...newPYQ, subject: e.target.value, video: '' })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                            className="w-full neuo-input px-3 py-2.5 text-sm"
+                            style={{ color: 'var(--foreground)' }}
                         >
                             <option value="">Select Subject</option>
                             {subjects.map(s => (
@@ -204,13 +223,14 @@ const PYQs = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Topic</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Topic</label>
                         <select
                             required
                             disabled={!newPYQ.subject}
                             value={newPYQ.topic}
                             onChange={(e) => setNewPYQ({ ...newPYQ, topic: e.target.value })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 disabled:opacity-50"
+                            className="w-full neuo-input px-3 py-2.5 text-sm disabled:opacity-50"
+                            style={{ color: 'var(--foreground)' }}
                         >
                             <option value="">Select Topic</option>
                             {formTopics.map(t => (
@@ -221,32 +241,32 @@ const PYQs = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">Year</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">Year</label>
                             <input
                                 type="number"
                                 placeholder="2024"
                                 required
                                 value={newPYQ.year}
                                 onChange={(e) => setNewPYQ({ ...newPYQ, year: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                                className="w-full neuo-input px-3 py-2.5 text-sm"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">Question ID</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">Question ID</label>
                             <input
                                 type="text"
                                 placeholder="Q15"
                                 required
                                 value={newPYQ.questionIdentifier}
                                 onChange={(e) => setNewPYQ({ ...newPYQ, questionIdentifier: e.target.value })}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                                className="w-full neuo-input px-3 py-2.5 text-sm"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Result</label>
-                        <div className="flex gap-4">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">Result</label>
+                        <div className="flex flex-wrap gap-3">
                             {['Solved', 'Wrong', 'Attempted'].map(status => (
                                 <label key={status} className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -255,35 +275,36 @@ const PYQs = () => {
                                         value={status}
                                         checked={newPYQ.status === status}
                                         onChange={(e) => setNewPYQ({ ...newPYQ, status: e.target.value })}
-                                        className="text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-800"
+                                        className="accent-primary"
                                     />
-                                    <span className="text-slate-300 text-sm">{status}</span>
+                                    <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{status}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Notes (Optional)</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Notes (Optional)</label>
                         <textarea
                             value={newPYQ.notes}
                             onChange={(e) => setNewPYQ({ ...newPYQ, notes: e.target.value })}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 h-20"
+                            className="w-full neuo-input px-3 py-2.5 text-sm h-20 resize-none"
                             placeholder="What did you learn?"
                         />
                     </div>
 
-                    <div className="pt-4 flex justify-end gap-3">
+                    <div className="pt-2 flex flex-col sm:flex-row justify-end gap-3">
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-slate-400 hover:text-white transition-colors"
+                            className="neuo-btn px-4 py-2.5 text-sm font-semibold w-full sm:w-auto"
+                            style={{ color: 'var(--muted-foreground)' }}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium transition-colors"
+                            className="neuo-btn-primary px-6 py-2.5 text-sm font-black w-full sm:w-auto"
                         >
                             Log PYQ
                         </button>

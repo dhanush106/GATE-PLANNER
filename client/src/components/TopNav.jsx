@@ -5,7 +5,8 @@ import {
     Moon,
     User,
     Bell,
-    Eye
+    Eye,
+    Menu
 } from 'lucide-react';
 import useStore from '../store/useStore';
 import useViewer from '../lib/useViewer';
@@ -13,7 +14,7 @@ import { motion } from 'framer-motion';
 
 const TopNav = () => {
     const navigate = useNavigate();
-    const { logout, userName, isDarkMode, toggleTheme } = useStore();
+    const { logout, userName, isDarkMode, toggleTheme, toggleMobileSidebar } = useStore();
     const isViewer = useViewer();
 
     const handleLogout = () => {
@@ -28,17 +29,28 @@ const TopNav = () => {
                 style={{ borderBottom: '1px solid var(--glass-border)' }}
             >
                 {/* Main nav row */}
-                <div className="h-16 px-4 md:px-8 flex items-center justify-between">
+                <div className="h-16 px-4 md:px-8 flex items-center justify-between gap-3">
 
-                    {/* Mobile Brand */}
-                    <div className="flex items-center md:hidden">
-                        <span className="text-lg font-black tracking-tighter" style={{ color: 'var(--foreground)' }}>
+                    {/* Left: Hamburger (mobile) + Brand (mobile) */}
+                    <div className="flex items-center gap-3">
+                        {/* Hamburger — mobile only */}
+                        <button
+                            onClick={toggleMobileSidebar}
+                            className="neuo-btn p-2.5 md:hidden"
+                            title="Open menu"
+                            style={{ color: 'var(--muted-foreground)' }}
+                        >
+                            <Menu className="w-5 h-5" />
+                        </button>
+
+                        {/* Mobile Brand */}
+                        <span className="text-lg font-black tracking-tighter md:hidden" style={{ color: 'var(--foreground)' }}>
                             GATE<span style={{ color: 'var(--primary)' }}>2026</span>
                         </span>
-                    </div>
 
-                    {/* Desktop left */}
-                    <div className="hidden md:flex items-center gap-4" />
+                        {/* Desktop left spacer */}
+                        <div className="hidden md:flex items-center gap-4" />
+                    </div>
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-2">
@@ -131,7 +143,7 @@ const TopNav = () => {
                     </div>
                 </div>
 
-                {/* Viewer banner strip — shown only for TEST101 users */}
+                {/* Viewer banner strip */}
                 {isViewer && (
                     <motion.div
                         initial={{ opacity: 0, y: -8 }}
@@ -145,7 +157,8 @@ const TopNav = () => {
                         }}
                     >
                         <Eye className="w-3 h-3" />
-                        Read-only access — You are viewing Dhanush's GATE 2026 preparation
+                        <span className="hidden sm:inline">Read-only access — You are viewing Dhanush's GATE 2026 preparation</span>
+                        <span className="sm:hidden">View-only mode</span>
                     </motion.div>
                 )}
             </header>

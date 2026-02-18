@@ -81,13 +81,13 @@ const Revisions = () => {
         <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in duration-500 pb-12">
 
             {/* LEFT: CALENDAR PANEL */}
-            <div className="w-full lg:w-[420px] shrink-0 flex flex-col bg-card border border-border rounded-[2rem] p-8 shadow-sm relative overflow-hidden h-fit">
+            <div className="w-full lg:w-[420px] shrink-0 flex flex-col bg-card border border-border rounded-[2rem] p-4 sm:p-8 shadow-sm relative overflow-hidden h-fit">
                 {/* Visual Accent */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary/50 to-transparent" />
 
                 {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+                <div className="flex justify-between items-center mb-4 sm:mb-8">
+                    <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-3">
                         <RotateCcw className="w-6 h-6 text-primary" />
                         {format(currentMonth, 'MMMM yyyy')}
                     </h2>
@@ -149,14 +149,14 @@ const Revisions = () => {
             </div>
 
             {/* RIGHT: REVISIONS LIST PANEL */}
-            <div className="flex-1 flex flex-col bg-card border border-border rounded-[2rem] p-8 shadow-sm relative overflow-hidden">
+            <div className="flex-1 flex flex-col bg-card border border-border rounded-[2rem] p-4 sm:p-8 shadow-sm relative overflow-hidden">
                 <div className="mb-10">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">
                                 {format(selectedDate, 'EEEE, MMMM do')}
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">
                                 {totalCount === 0 ? "No Revisions Due" : `${completedCount}/${totalCount} Completed`}
                             </h1>
                         </div>

@@ -113,16 +113,16 @@ const Subjects = () => {
     if (loading) return <div className="h-screen flex items-center justify-center" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Loading Engine...</div>;
 
     return (
-        <div className="min-h-[calc(100vh-6rem)] bg-[#050505] space-y-8 p-6 animate-in fade-in duration-500">
+        <div className="min-h-[calc(100vh-6rem)] bg-[#050505] space-y-6 sm:space-y-8 p-4 sm:p-6 animate-in fade-in duration-500">
             {/* Header */}
-            <div className="flex justify-between items-center bg-[#111] p-6 rounded-3xl border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-[#111] p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/5 backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/50 via-cyan-500/50 to-transparent" />
                 <div className="z-10">
-                    <h1 className="text-3xl font-bold text-white flex items-center gap-3 tracking-tight">
-                        <Target className="w-8 h-8 text-emerald-500" />
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3 tracking-tight">
+                        <Target className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-500" />
                         Execution Engine
                     </h1>
-                    <p className="text-slate-400 mt-1 font-medium">Focus on the process. Data doesn't lie.</p>
+                    <p className="text-slate-400 mt-1 font-medium text-sm sm:text-base">Focus on the process. Data doesn't lie.</p>
                 </div>
                 {!isViewer && (
                     <button
@@ -130,7 +130,7 @@ const Subjects = () => {
                             setFormData({ name: '', weightage: '', targetDate: '' });
                             setIsCreateModalOpen(true);
                         }}
-                        className="z-10 bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-95 transition-all"
+                        className="z-10 w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-95 transition-all"
                     >
                         <Plus className="w-5 h-5" /> Add Subject
                     </button>

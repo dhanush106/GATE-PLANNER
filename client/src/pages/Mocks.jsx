@@ -87,21 +87,21 @@ const Mocks = () => {
 
     return (
         <div className="space-y-10 animate-in fade-in duration-500 pb-12">
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl md:text-5xl font-black tracking-tight flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-2xl">
-                            <CheckCircle2 className="w-8 h-8 text-primary" />
+                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight flex items-center gap-3 sm:gap-4">
+                        <div className="p-2 sm:p-3 bg-primary/10 rounded-xl sm:rounded-2xl">
+                            <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                         </div>
                         Mock Analysis
                     </h1>
-                    <p className="text-muted-foreground font-medium mt-3 max-w-lg">
+                    <p className="text-muted-foreground font-medium mt-2 sm:mt-3 max-w-lg text-sm sm:text-base">
                         Track your performance trends and identify conceptual gaps to optimize your GATE rank.
                     </p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3.5 rounded-2xl flex items-center gap-2 font-black shadow-glow transition-all hover:scale-105 active:scale-95"
+                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2 font-black shadow-glow transition-all hover:scale-105 active:scale-95"
                 >
                     <Plus className="w-5 h-5" /> Log Mock Test
                 </button>
@@ -115,7 +115,7 @@ const Mocks = () => {
                 <h2 className="text-xl font-black tracking-tight mb-8 flex items-center gap-3">
                     <TrendingUp className="w-5 h-5 text-primary" /> Performance Trend
                 </h2>
-                <div className="h-[350px] w-full">
+                <div className="h-[220px] sm:h-[300px] md:h-[350px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={mocksData.trendData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} vertical={false} />
@@ -201,7 +201,7 @@ const Mocks = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-10 bg-secondary/30 p-6 rounded-3xl border border-border">
+                            <div className="flex flex-wrap items-center gap-4 sm:gap-10 bg-secondary/30 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border mt-4 md:mt-0">
                                 <div className="text-center">
                                     <div className="text-4xl font-black tracking-tighter text-foreground">{mock.marksObtained}</div>
                                     <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Score</div>

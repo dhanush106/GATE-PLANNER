@@ -31,6 +31,11 @@ const useStore = create(
       // User Name
       userName: 'Aspirant',
       setUserName: (name) => set({ userName: name }),
+
+      // Mobile Sidebar (not persisted)
+      isMobileSidebarOpen: false,
+      toggleMobileSidebar: () => set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
+      closeMobileSidebar: () => set({ isMobileSidebarOpen: false }),
     }),
     {
       name: 'gate-prep-storage',

@@ -160,10 +160,10 @@ const SubjectBoard = () => {
     if (!subject) return <div className="h-screen bg-[#050505] text-white flex items-center justify-center">Subject Not Found</div>;
 
     return (
-        <div className="h-[calc(100vh-6rem)] bg-[#050505] flex gap-6 p-6 animate-in fade-in duration-500 overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 animate-in fade-in duration-500 pb-6 min-h-[calc(100vh-6rem)]">
 
             {/* LEFT: CALENDAR PANEL */}
-            <div className="w-[420px] flex flex-col bg-[#111] border border-white/5 rounded-3xl p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div className="w-full lg:w-[420px] shrink-0 flex flex-col bg-[#111] border border-white/5 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -196,7 +196,7 @@ const SubjectBoard = () => {
                                 key={day.toString()}
                                 onClick={() => setSelectedDate(day)}
                                 className={cn(
-                                    "h-10 w-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all relative group",
+                                    "h-9 w-9 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all relative group",
                                     !isCurrentMonth && "opacity-20",
                                     isSelected
                                         ? "bg-emerald-500 text-black font-bold shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-110"
@@ -246,14 +246,14 @@ const SubjectBoard = () => {
             </div>
 
             {/* RIGHT: TASKS PANEL */}
-            <div className="flex-1 flex flex-col bg-[#111] border border-white/5 rounded-3xl p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div className="flex-1 flex flex-col bg-[#111] border border-white/5 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden min-h-[400px] lg:min-h-0">
                 <button onClick={() => navigate('/subjects')} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
                     <ArrowLeft className="w-6 h-6" />
                 </button>
 
-                <div className="mb-8 z-10">
+                <div className="mb-4 sm:mb-8 z-10 pr-10">
                     <div className="text-slate-500 text-sm font-medium mb-1">{format(selectedDate, 'EEEE, MMMM do, yyyy')}</div>
-                    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-sm">
+                    <h1 className="text-2xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-sm">
                         {subject.name}
                     </h1>
                 </div>
