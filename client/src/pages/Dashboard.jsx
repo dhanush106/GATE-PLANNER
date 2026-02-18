@@ -3,13 +3,14 @@ import axios from 'axios';
 import {
     CheckCircle2,
     RotateCcw,
-    BookOpen, // Changed from Youtube
+    BookOpen,
     BrainCircuit,
     Trophy,
     TrendingUp,
     AlertCircle,
     Clock,
-    Calendar
+    Calendar,
+    ArrowRight
 } from 'lucide-react';
 import { format } from 'date-fns';
 import KPICard from '../components/KPICard';
@@ -17,9 +18,8 @@ import ProgressBar from '../components/ProgressBar';
 import HeatmapSection from '../components/HeatmapSection';
 import ProgressGraphs from '../components/ProgressGraphs';
 import { cn } from '../lib/utils';
+import { motion } from 'framer-motion';
 
-// WHY: Main Dashboard view - the command center
-// Shows all critical metrics, today's tasks, and motivational elements
 const Dashboard = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -38,225 +38,195 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    if (loading) return <div className="text-white p-8">Loading dashboard...</div>;
-    if (!data) return <div className="text-white p-8">Failed to load dashboard data.</div>;
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+                <p className="text-muted-foreground font-medium animate-pulse">Initializing Command Center...</p>
+            </div>
+        </div>
+    );
+
+    if (!data) return <div className="text-destructive p-8 bg-destructive/10 rounded-2xl border border-destructive/20">Failed to load dashboard data. Please check connection.</div>;
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-10 pb-12"
+        >
             {/* HEADER SECTION */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-800 pb-6">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
-                        <Calendar className="w-8 h-8 text-blue-500" />
-                        {format(new Date(data.today), 'EEEE, MMMM do, yyyy')}
-                    </h1>
-                    <p className="text-slate-400 mt-2">
-                        "Consistency is the code to your rank."
-                    </p>
+                    <motion.div variants={itemVariants} className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            <Calendar className="w-6 h-6 text-primary" />
+                        </div>
+                        <h1 className="text-2xl md:text-4xl font-black tracking-tight">
+                            {format(new Date(data.today), 'EEEE, MMMM do')}
+                        </h1>
+                    </motion.div>
+                    <motion.p variants={itemVariants} className="text-muted-foreground font-medium max-w-md">
+                        "Consistency is the code to your rank." Ready to optimize today's performance?
+                    </motion.p>
                 </div>
 
-                <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-800/50 px-6 py-4 rounded-xl text-center min-w-[200px]">
-                    <div className="text-4xl font-bold text-blue-400">{data.daysUntilGATE}</div>
-                    <div className="text-slate-400 text-xs uppercase tracking-widest mt-1">Days to GATE 2026</div>
-                </div>
-            </div>
+                <motion.div
+                    variants={itemVariants}
+                    className="relative group overflow-hidden bg-primary/10 border border-primary/20 px-8 py-5 rounded-2xl transition-all hover:bg-primary/15"
+                >
+                    <div className="absolute top-0 right-0 p-1">
+                        <ArrowRight className="w-4 h-4 text-primary/40 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <div className="text-4xl font-black text-primary tracking-tighter">{data.daysUntilGATE}</div>
+                    <div className="text-muted-foreground text-[10px] uppercase font-bold tracking-[0.2em] mt-1">Days to GATE 2026</div>
+                </motion.div>
+            </header>
 
-            import HeatmapSection from '../components/HeatmapSection';
-            import ProgressGraphs from '../components/ProgressGraphs';
-
-            // ... (existing imports)
-
-            // ... inside Dashboard component ...
             {/* KPI GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* ... existing KPICards ... */}
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KPICard
                     title="Topics Completed"
                     value={data.kpis.videosCompleted}
                     icon={BookOpen}
-                    className="border-blue-900/50"
                 />
                 <KPICard
                     title="Revisions Done"
                     value={data.kpis.revisionsCompleted}
                     icon={RotateCcw}
-                    className="border-purple-900/50"
                 />
                 <KPICard
                     title="PYQs Solved"
                     value={data.kpis.pyqsSolved}
                     icon={BrainCircuit}
-                    className="border-emerald-900/50"
                 />
                 <KPICard
                     title="Problems Solved"
                     value={data.kpis.problemsSolved}
                     icon={CheckCircle2}
-                    className="border-amber-900/50"
                 />
-            </div>
+            </section>
 
-            {/* NEW: VISUALIZATIONS SECTION */}
-            <div className="space-y-8">
-                <HeatmapSection data={data.heatmapData} />
-                <ProgressGraphs problemsData={data.problemsByDay} subjectData={data.subjectProgress} />
-            </div>
+            {/* MID SECTION - ANALYTICS & FOCUS */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* LEFT: VISUALIZATIONS */}
+                <div className="lg:col-span-8 space-y-8">
+                    <motion.div variants={itemVariants} className="bento-card">
+                        <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-primary" /> Activity Heatmap
+                        </h2>
+                        <HeatmapSection data={data.heatmapData} />
+                    </motion.div>
 
-            {/* MID SECTION - METRICS & ACTIONS */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* LEFT COLUMN: Study Metrics & Motivation */}
-                <div className="space-y-6">
-                    {/* Consistency Streak */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h3 className="text-slate-400 text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4" /> Consistency Streak
-                        </h3>
-                        <div className="flex items-end gap-3">
-                            <div className="text-5xl font-bold text-orange-500">{data.studyMetrics.consistencyStreak}</div>
-                            <div className="text-slate-500 mb-1.5">days without break</div>
-                        </div>
-                    </div>
-
-                    {/* Study Hours */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h3 className="text-slate-400 text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Clock className="w-4 h-4" /> Study Hours
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <div className="text-2xl font-bold text-white">{data.studyMetrics.todayStudyHours}</div>
-                                <div className="text-slate-500 text-xs">Today</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-white">{data.studyMetrics.cumulativeStudyHours}</div>
-                                <div className="text-slate-500 text-xs">Total</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Best Mock */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h3 className="text-slate-400 text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Trophy className="w-4 h-4 text-emerald-500" /> Best Mock Score
-                        </h3>
-                        <div className="flex items-end gap-3">
-                            <div className="text-4xl font-bold text-emerald-500">{data.motivation.bestMockScore}%</div>
-                            <div className="text-slate-500 mb-1.5">accuracy</div>
-                        </div>
-                    </div>
+                    <motion.div variants={itemVariants} className="bento-card">
+                        <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-primary" /> Progress Analytics
+                        </h2>
+                        <ProgressGraphs problemsData={data.problemsByDay} subjectData={data.subjectProgress} />
+                    </motion.div>
                 </div>
 
-                {/* MIDDLE & RIGHT COLUMNS: Action Items */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Today's Tasks & Revisions */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 h-full">
+                {/* RIGHT: METRICS & FOCUS */}
+                <div className="lg:col-span-4 space-y-6">
+                    {/* Focus Card */}
+                    <motion.div variants={itemVariants} className="bento-card border-primary/20 bg-primary/[0.02]">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-white">Today's Focus</h2>
-                            <div className="text-slate-400 text-sm">
-                                {data.studyMetrics.dailyCompletion}% Completed
-                            </div>
+                            <h2 className="text-xl font-black tracking-tight">Today's Focus</h2>
+                            <span className="text-primary text-sm font-bold bg-primary/10 px-2 py-1 rounded-lg">
+                                {data.studyMetrics.dailyCompletion}%
+                            </span>
                         </div>
 
-                        <ProgressBar value={data.studyMetrics.dailyCompletion} showLabel={false} className="mb-8" />
+                        <ProgressBar value={data.studyMetrics.dailyCompletion} showLabel={false} className="h-3 mb-8" />
 
                         <div className="space-y-6">
-                            {/* Topics Section - Replaces Revisions as primary if we want, or keep both */}
+                            {/* Topics */}
                             <div>
-                                <h3 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
-                                    <BookOpen className="w-4 h-4 text-blue-400" />
-                                    Topics Planned for Today ({data.todayActions.topics ? data.todayActions.topics.length : 0})
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+                                    <BookOpen className="w-4 h-4 text-primary" /> Planned Topics
                                 </h3>
-
                                 {(!data.todayActions.topics || data.todayActions.topics.length === 0) ? (
-                                    <p className="text-slate-500 text-sm italic">No topics scheduled. Plan some in Subjects!</p>
+                                    <p className="text-muted-foreground text-sm italic py-4 text-center border border-dashed border-border rounded-xl">No topics scheduled.</p>
                                 ) : (
-                                    <ul className="space-y-2">
-                                        {data.todayActions.topics.map((topic) => (
-                                            <li key={topic._id} className="flex justify-between items-center bg-slate-800/50 p-3 rounded-lg border border-slate-800">
+                                    <ul className="space-y-3">
+                                        {data.todayActions.topics.slice(0, 3).map((topic) => (
+                                            <li key={topic._id} className="group flex justify-between items-center bg-secondary/30 p-4 rounded-xl border border-border hover:border-primary/30 transition-all">
                                                 <div>
-                                                    <div className="flex items-center gap-2 mb-0.5">
-                                                        <span className="text-slate-500 text-xs font-mono bg-slate-900 px-1.5 rounded">
-                                                            {format(new Date(topic.assignedDate), 'h:mm a')}
-                                                        </span>
-                                                        <p className="text-slate-200 text-sm font-medium">{topic.name}</p>
-                                                    </div>
-                                                    <a href={`/subjects/${topic.subject?._id}`} className="text-blue-500 hover:text-blue-400 text-xs hover:underline">
-                                                        {topic.subject?.name}
-                                                    </a>
+                                                    <p className="text-sm font-bold group-hover:text-primary transition-colors">{topic.name}</p>
+                                                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{topic.subject?.name}</p>
                                                 </div>
-                                                <span className={cn(
-                                                    "text-xs px-2 py-1 rounded",
-                                                    topic.isCompleted ? "bg-emerald-900/30 text-emerald-400" : "bg-blue-900/30 text-blue-400"
-                                                )}>
-                                                    {topic.isCompleted ? 'Completed' : 'Planned'}
-                                                </span>
+                                                <div className={cn(
+                                                    "w-2 h-2 rounded-full",
+                                                    topic.isCompleted ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-primary animate-pulse shadow-glow"
+                                                )} />
                                             </li>
                                         ))}
                                     </ul>
                                 )}
                             </div>
 
-                            <div className="h-px bg-slate-800"></div>
+                            <div className="h-px bg-border" />
 
-                            {/* Revisions Section */}
+                            {/* Weak Topics */}
                             <div>
-                                <h3 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
-                                    <RotateCcw className="w-4 h-4 text-purple-400" />
-                                    Revisions Due ({data.todayActions.revisionsCount})
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4 text-destructive" /> Improvement Areas
                                 </h3>
-
-                                {data.todayActions.revisions.length === 0 ? (
-                                    <p className="text-slate-500 text-sm italic">No revisions scheduled for today.</p>
-                                ) : (
-                                    <ul className="space-y-2">
-                                        {data.todayActions.revisions.map((rev) => (
-                                            <li key={rev._id} className="flex justify-between items-center bg-slate-800/50 p-3 rounded-lg border border-slate-800">
-                                                <div>
-                                                    <p className="text-slate-200 text-sm font-medium">{rev.topic ? rev.topic.name : 'Unknown Topic'}</p>
-                                                    {/* Updated to use topic */}
-                                                    <p className="text-slate-500 text-xs">{rev.subject?.name}</p>
-                                                </div>
-                                                <span className="text-xs bg-purple-900/30 text-purple-400 px-2 py-1 rounded">
-                                                    Rev #{rev.revisionNumber}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-
-                            <div className="h-px bg-slate-800"></div>
-
-                            {/* Weak Topics Section */}
-                            <div>
-                                <h3 className="text-slate-300 font-medium mb-3 flex items-center gap-2">
-                                    <AlertCircle className="w-4 h-4 text-red-400" />
-                                    Weak Topics to Review
-                                </h3>
-
-                                {data.todayActions.weakTopics.length === 0 ? (
-                                    <p className="text-slate-500 text-sm italic">No weak topics identified. Keep it up!</p>
-                                ) : (
-                                    <ul className="space-y-2">
-                                        {data.todayActions.weakTopics.slice(0, 3).map((topic) => (
-                                            <li key={topic._id} className="flex justify-between items-center bg-slate-800/50 p-3 rounded-lg border border-slate-800">
-                                                <div>
-                                                    <p className="text-slate-200 text-sm font-medium">{topic.name}</p>
-                                                    <p className="text-slate-500 text-xs">{topic.subject?.name}</p>
-                                                </div>
-                                                <span className="text-xs bg-red-900/30 text-red-400 px-2 py-1 rounded">
-                                                    Conf: {topic.confidenceLevel}/5
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
+                                <ul className="space-y-3">
+                                    {data.todayActions.weakTopics.slice(0, 2).map((topic) => (
+                                        <li key={topic._id} className="flex justify-between items-center bg-destructive/5 p-4 rounded-xl border border-destructive/10">
+                                            <div>
+                                                <p className="text-sm font-bold">{topic.name}</p>
+                                                <p className="text-[10px] text-destructive/70 font-bold uppercase">{topic.subject?.name}</p>
+                                            </div>
+                                            <TrendingUp className="w-4 h-4 text-destructive/40" />
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
+                    </motion.div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 gap-4">
+                        <motion.div variants={itemVariants} className="bento-card py-4 bg-orange-500/[0.03] border-orange-500/10">
+                            <div className="flex items-center gap-4">
+                                <TrendingUp className="w-8 h-8 text-orange-500" />
+                                <div>
+                                    <div className="text-2xl font-black text-orange-500">{data.studyMetrics.consistencyStreak}</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Day Streak</div>
+                                </div>
+                            </div>
+                        </motion.div>
+                        <motion.div variants={itemVariants} className="bento-card py-4 bg-blue-500/[0.03] border-blue-500/10">
+                            <div className="flex items-center gap-4">
+                                <Clock className="w-8 h-8 text-blue-500" />
+                                <div>
+                                    <div className="text-2xl font-black text-blue-500">{data.studyMetrics.todayStudyHours}h</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Study Today</div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>
-        </div >
+        </motion.div>
     );
 };
 

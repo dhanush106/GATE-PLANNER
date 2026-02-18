@@ -86,55 +86,78 @@ const Mocks = () => {
     if (loading) return <div className="text-white p-8">Loading mocks...</div>;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-                    Mock Analysis
-                </h1>
+        <div className="space-y-10 animate-in fade-in duration-500 pb-12">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight flex items-center gap-4">
+                        <div className="p-3 bg-primary/10 rounded-2xl">
+                            <CheckCircle2 className="w-8 h-8 text-primary" />
+                        </div>
+                        Mock Analysis
+                    </h1>
+                    <p className="text-muted-foreground font-medium mt-3 max-w-lg">
+                        Track your performance trends and identify conceptual gaps to optimize your GATE rank.
+                    </p>
+                </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3.5 rounded-2xl flex items-center gap-2 font-black shadow-glow transition-all hover:scale-105 active:scale-95"
                 >
                     <Plus className="w-5 h-5" /> Log Mock Test
                 </button>
-            </div>
+            </header>
 
             {/* TREND CHART */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <h2 className="text-lg font-bold text-slate-100 mb-6 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-blue-500" /> Performance Trend
+            <div className="bento-card relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <TrendingUp className="w-32 h-32 text-primary" />
+                </div>
+                <h2 className="text-xl font-black tracking-tight mb-8 flex items-center gap-3">
+                    <TrendingUp className="w-5 h-5 text-primary" /> Performance Trend
                 </h2>
-                <div className="h-[300px] w-full">
+                <div className="h-[350px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={mocksData.trendData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} vertical={false} />
                             <XAxis
                                 dataKey="date"
-                                tick={{ fill: '#94a3b8' }}
-                                tickFormatter={(date) => new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                tick={{ fill: 'var(--color-muted-foreground)', fontSize: 10, fontWeight: 700 }}
+                                tickFormatter={(date) => format(new Date(date), 'MMM d')}
+                                axisLine={false}
+                                tickLine={false}
+                                dy={10}
                             />
-                            <YAxis tick={{ fill: '#94a3b8' }} />
+                            <YAxis
+                                tick={{ fill: 'var(--color-muted-foreground)', fontSize: 10, fontWeight: 700 }}
+                                axisLine={false}
+                                tickLine={false}
+                                dx={-10}
+                            />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', color: '#f8fafc' }}
-                                itemStyle={{ color: '#f8fafc' }}
-                                labelFormatter={(date) => new Date(date).toLocaleDateString()}
+                                contentStyle={{
+                                    backgroundColor: 'var(--color-card)',
+                                    borderColor: 'var(--color-border)',
+                                    borderRadius: '1rem',
+                                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                                    color: 'var(--color-foreground)'
+                                }}
+                                cursor={{ stroke: 'var(--color-primary)', strokeWidth: 1 }}
                             />
                             <Line
                                 type="monotone"
                                 dataKey="marks"
-                                stroke="#3b82f6"
-                                strokeWidth={2}
-                                dot={{ fill: '#3b82f6', r: 4 }}
-                                activeDot={{ r: 6 }}
+                                stroke="var(--color-primary)"
+                                strokeWidth={4}
+                                dot={{ fill: 'var(--color-primary)', r: 4, strokeWidth: 2, stroke: 'var(--color-card)' }}
+                                activeDot={{ r: 8, strokeWidth: 0 }}
                                 name="Marks"
                             />
                             <Line
                                 type="monotone"
                                 dataKey="accuracy"
                                 stroke="#10b981"
-                                strokeWidth={2}
-                                strokeDasharray="5 5"
+                                strokeWidth={3}
+                                strokeDasharray="6 6"
                                 dot={false}
                                 name="Accuracy %"
                             />
@@ -144,44 +167,54 @@ const Mocks = () => {
             </div>
 
             {/* MOCK LIST */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-6">
+                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Recent Sessions</h2>
                 {mocksData.mocks.map((mock) => (
-                    <div key={mock._id} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all">
-                        <div className="flex flex-col md:flex-row justify-between gap-4">
-                            <div>
-                                <div className="text-slate-500 text-sm mb-1">{formatDate(mock.testDate)}</div>
-                                <div className="text-xl font-bold text-white mb-2">
-                                    {mock.subjectsCovered.length > 0
-                                        ? mock.subjectsCovered.map(s => s.name).join(', ')
-                                        : 'Full Length Mock'}
+                    <div key={mock._id} className="bento-card group">
+                        <div className="flex flex-col md:flex-row justify-between gap-6">
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
+                                        {format(new Date(mock.testDate), 'EEEE, MMMM do')}
+                                    </div>
+                                    <div className="text-2xl font-black tracking-tight text-foreground">
+                                        {mock.subjectsCovered.length > 0
+                                            ? mock.subjectsCovered.map(s => s.name).join(', ')
+                                            : 'Full Length Mock'}
+                                    </div>
                                 </div>
 
                                 {/* Mistakes */}
-                                <div className="flex gap-4 mt-3">
-                                    <div className="flex items-center gap-1.5 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded">
+                                <div className="flex flex-wrap gap-2">
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-rose-500 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20">
                                         <AlertOctagon className="w-3 h-3" />
                                         Conceptual: {mock.mistakeBreakdown.conceptual}
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-900/20 px-2 py-1 rounded">
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-amber-500 bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/20">
                                         <AlertOctagon className="w-3 h-3" />
                                         Silly: {mock.mistakeBreakdown.silly}
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-blue-500 bg-blue-500/10 px-3 py-1.5 rounded-full border border-blue-500/20">
+                                        <AlertOctagon className="w-3 h-3" />
+                                        Time: {mock.mistakeBreakdown.timePressure}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-8">
+                            <div className="flex items-center gap-10 bg-secondary/30 p-6 rounded-3xl border border-border">
                                 <div className="text-center">
-                                    <div className="text-3xl font-bold text-white">{mock.marksObtained}</div>
-                                    <div className="text-xs text-slate-500 uppercase">Marks</div>
+                                    <div className="text-4xl font-black tracking-tighter text-foreground">{mock.marksObtained}</div>
+                                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Score</div>
                                 </div>
+                                <div className="w-px h-10 bg-border" />
                                 <div className="text-center">
                                     <div className={cn(
-                                        "text-3xl font-bold",
-                                        mock.accuracy > 80 ? "text-emerald-500" : mock.accuracy > 50 ? "text-blue-500" : "text-amber-500"
+                                        "text-4xl font-black tracking-tighter",
+                                        mock.accuracy > 80 ? "text-emerald-500" : mock.accuracy > 50 ? "text-primary" : "text-amber-500"
                                     )}>
                                         {Math.round(mock.accuracy)}%
                                     </div>
-                                    <div className="text-xs text-slate-500 uppercase">Accuracy</div>
+                                    <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Accuracy</div>
                                 </div>
                             </div>
                         </div>

@@ -1,72 +1,405 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #3b82f6;
-  /* Blue 500 */
-  --color-brand-secondary: #0f172a;
-  /* Slate 900 */
-  --color-brand-accent: #f59e0b;
-  /* Amber 500 */
-
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --color-brand-primary: var(--primary);
+  --color-brand-secondary: var(--secondary);
+  --color-brand-accent: var(--accent);
+  --font-sans: 'Inter', 'Outfit', system-ui, sans-serif;
 }
 
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 :root {
-  color-scheme: dark;
-  color: white;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-full: 9999px;
+
+  /* ── Light Mode ── */
+  --background: #e8edf2;
+  --background-rgb: 232, 237, 242;
+  --foreground: #1a2332;
+  --card: #edf0f5;
+  --card-rgb: 237, 240, 245;
+  --card-foreground: #1a2332;
+  --popover: #edf0f5;
+  --popover-foreground: #1a2332;
+  --primary: #6366f1;
+  --primary-rgb: 99, 102, 241;
+  --primary-foreground: #ffffff;
+  --secondary: #dde3ec;
+  --secondary-foreground: #1a2332;
+  --muted: #d4dae4;
+  --muted-foreground: #64748b;
+  --accent: #818cf8;
+  --accent-foreground: #1a2332;
+  --destructive: #ef4444;
+  --destructive-rgb: 239, 68, 68;
+  --destructive-foreground: #f8fafc;
+  --border: rgba(255, 255, 255, 0.6);
+  --input: #d4dae4;
+  --ring: #6366f1;
+
+  /* ── Neumorphism Shadows (Light) ── */
+  --neuo-raised:
+    6px 6px 14px rgba(163, 177, 198, 0.7),
+    -6px -6px 14px rgba(255, 255, 255, 0.9);
+  --neuo-raised-lg:
+    10px 10px 24px rgba(163, 177, 198, 0.8),
+    -10px -10px 24px rgba(255, 255, 255, 1);
+  --neuo-inset:
+    inset 4px 4px 10px rgba(163, 177, 198, 0.7),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+  --neuo-flat:
+    3px 3px 8px rgba(163, 177, 198, 0.6),
+    -3px -3px 8px rgba(255, 255, 255, 0.8);
+
+  /* ── Glass ── */
+  --glass-bg: rgba(237, 240, 245, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-shadow:
+    0 8px 32px rgba(99, 102, 241, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* ── Glow ── */
+  --glow: 0 0 24px rgba(99, 102, 241, 0.25);
+  --glow-sm: 0 0 12px rgba(99, 102, 241, 0.18);
+
+  /* ── Legacy shadow aliases ── */
+  --shadow-sm: var(--neuo-flat);
+  --shadow-md: var(--neuo-raised);
+  --shadow-lg: var(--neuo-raised-lg);
+}
+
+.dark {
+  --background: #0f1117;
+  --background-rgb: 15, 17, 23;
+  --foreground: #e2e8f0;
+  --card: #161b27;
+  --card-rgb: 22, 27, 39;
+  --card-foreground: #e2e8f0;
+  --popover: #161b27;
+  --popover-foreground: #e2e8f0;
+  --primary: #818cf8;
+  --primary-rgb: 129, 140, 248;
+  --primary-foreground: #0f1117;
+  --secondary: #1e2535;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1e2535;
+  --muted-foreground: #94a3b8;
+  --accent: #6366f1;
+  --accent-foreground: #e2e8f0;
+  --destructive: #ef4444;
+  --destructive-rgb: 239, 68, 68;
+  --destructive-foreground: #fafafa;
+  --border: rgba(129, 140, 248, 0.12);
+  --input: #1e2535;
+  --ring: #818cf8;
+
+  /* ── Neumorphism Shadows (Dark) ── */
+  --neuo-raised:
+    6px 6px 16px rgba(0, 0, 0, 0.55),
+    -4px -4px 12px rgba(255, 255, 255, 0.04);
+  --neuo-raised-lg:
+    10px 10px 28px rgba(0, 0, 0, 0.65),
+    -6px -6px 18px rgba(255, 255, 255, 0.05);
+  --neuo-inset:
+    inset 4px 4px 12px rgba(0, 0, 0, 0.55),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.04);
+  --neuo-flat:
+    3px 3px 8px rgba(0, 0, 0, 0.45),
+    -2px -2px 6px rgba(255, 255, 255, 0.03);
+
+  /* ── Glass ── */
+  --glass-bg: rgba(22, 27, 39, 0.72);
+  --glass-border: rgba(129, 140, 248, 0.14);
+  --glass-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+
+  /* ── Glow ── */
+  --glow: 0 0 28px rgba(129, 140, 248, 0.3);
+  --glow-sm: 0 0 14px rgba(129, 140, 248, 0.2);
+
+  /* ── Legacy shadow aliases ── */
+  --shadow-sm: var(--neuo-flat);
+  --shadow-md: var(--neuo-raised);
+  --shadow-lg: var(--neuo-raised-lg);
+}
+
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  @apply bg-slate-950 text-slate-200 antialiased min-h-screen font-sans;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', 'Outfit', system-ui, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
-/* Custom scrollbar for a cleaner look */
+/* ============================================================
+   GLASSMORPHISM UTILITIES
+   ============================================================ */
+
+/* Frosted glass panel */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Full glass card — panel with rounded corners */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--glass-shadow), var(--neuo-raised);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(var(--primary-rgb), 0.35);
+  box-shadow: var(--glass-shadow), var(--neuo-raised-lg), var(--glow-sm);
+}
+
+/* ============================================================
+   NEUMORPHISM UTILITIES
+   ============================================================ */
+
+/* Raised neumorphic surface */
+.neuo-card {
+  background-color: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neuo-raised);
+  border: 1px solid var(--glass-border);
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.neuo-card:hover {
+  box-shadow: var(--neuo-raised-lg), var(--glow-sm);
+  transform: translateY(-3px);
+}
+
+/* Inset neumorphic surface (active/pressed state) */
+.neuo-inset {
+  background-color: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neuo-inset);
+  border: 1px solid transparent;
+}
+
+/* Neumorphic button */
+.neuo-btn {
+  background-color: var(--card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neuo-raised);
+  border: 1px solid var(--glass-border);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.neuo-btn:hover {
+  box-shadow: var(--neuo-raised-lg);
+  transform: translateY(-1px);
+}
+
+.neuo-btn:active {
+  box-shadow: var(--neuo-inset);
+  transform: translateY(0);
+}
+
+/* Primary neumorphic button */
+.neuo-btn-primary {
+  background: linear-gradient(135deg,
+      rgba(var(--primary-rgb), 0.9),
+      rgba(var(--primary-rgb), 0.75));
+  color: var(--primary-foreground);
+  border-radius: var(--radius-md);
+  box-shadow:
+    var(--neuo-raised),
+    0 0 20px rgba(var(--primary-rgb), 0.3);
+  border: 1px solid rgba(var(--primary-rgb), 0.4);
+  transition: box-shadow 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.neuo-btn-primary:hover {
+  box-shadow:
+    var(--neuo-raised-lg),
+    0 0 30px rgba(var(--primary-rgb), 0.45);
+  transform: translateY(-2px);
+}
+
+.neuo-btn-primary:active {
+  box-shadow: var(--neuo-inset);
+  transform: translateY(0);
+  opacity: 0.9;
+}
+
+/* ============================================================
+   BENTO GRID SYSTEM
+   ============================================================ */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* Bento card — neumorphic + glass hybrid */
+.bento-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--neuo-raised);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
+}
+
+.bento-card:hover {
+  border-color: rgba(var(--primary-rgb), 0.3);
+  transform: translateY(-4px);
+  box-shadow: var(--neuo-raised-lg), var(--glow-sm);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: var(--glow-sm);
+  }
+
+  50% {
+    box-shadow: var(--glow);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-900;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-700 rounded-full;
+  background: rgba(var(--primary-rgb), 0.25);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-600;
+  background: rgba(var(--primary-rgb), 0.45);
 }
 
-/* BENTO GRID UTILITIES */
-.bento-grid {
-  @apply grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4;
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
+.neuo-input {
+  background-color: var(--background);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neuo-inset);
+  color: var(--foreground);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  outline: none;
 }
 
-.bento-card {
-  @apply bg-slate-900 border border-slate-800 rounded-xl p-6 transition-all duration-200 hover:border-slate-700;
+.neuo-input:focus {
+  border-color: rgba(var(--primary-rgb), 0.5);
+  box-shadow: var(--neuo-inset), 0 0 0 3px rgba(var(--primary-rgb), 0.12);
 }
 
-/* STATUS BADGES */
-.status-badge {
-  @apply px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider;
+.neuo-input::placeholder {
+  color: var(--muted-foreground);
 }
 
-.status-not-started {
-  @apply bg-slate-800 text-slate-400 border border-slate-700;
-}
-
-.status-watching {
-  @apply bg-blue-900/30 text-blue-400 border border-blue-800/50;
-}
-
-.status-completed {
-  @apply bg-emerald-900/30 text-emerald-400 border border-emerald-800/50;
-}
-
-.status-revised {
-  @apply bg-purple-900/30 text-purple-400 border border-purple-800/50;
-}
-
-.status-weak {
-  @apply bg-red-900/30 text-red-400 border border-red-800/50;
+/* ============================================================
+   BADGE / TAG
+   ============================================================ */
+.glass-badge {
+  background: rgba(var(--primary-rgb), 0.12);
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
+  border-radius: var(--radius-full);
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  backdrop-filter: blur(8px);
 }

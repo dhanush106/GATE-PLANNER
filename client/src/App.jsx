@@ -4,7 +4,8 @@ import {
   Route,
   Navigate
 } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import TopNav from './components/TopNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -13,15 +14,34 @@ import SubjectBoard from './pages/SubjectBoard';
 import Revisions from './pages/Revisions';
 import Mocks from './pages/Mocks';
 import PYQs from './pages/PYQs';
+import useStore from './store/useStore';
+import { useEffect } from 'react';
 
-const AppLayout = ({ children }) => (
-  <div className="min-h-screen bg-slate-950 text-slate-200 pt-16">
-    <Navbar />
-    <main className="max-w-dvw mx-auto p-4 sm:p-6 lg:p-8">
-      {children}
-    </main>
-  </div>
-);
+const AppLayout = ({ children }) => {
+  const isDarkMode = useStore((state) => state.isDarkMode);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  return (
+    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopNav />
+        <main className="flex-1 p-4 md:p-8 pt-20 md:pt-24 animate-fade-in overflow-y-auto">
+          <div className="max-w-7xl mx-auto w-full">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   return (

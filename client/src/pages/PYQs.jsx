@@ -13,7 +13,7 @@ const PYQs = () => {
     const [pyqs, setPyqs] = useState([]);
     const [stats, setStats] = useState(null);
     const [subjects, setSubjects] = useState([]);
-    const [videos, setVideos] = useState([]); // Actually topics now
+    const [topics, setTopics] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,7 +23,7 @@ const PYQs = () => {
     // Form State
     const [newPYQ, setNewPYQ] = useState({
         subject: '',
-        topic: '', // Changed from video
+        topic: '',
         year: '',
         questionIdentifier: '',
         status: 'Attempted',
@@ -31,7 +31,7 @@ const PYQs = () => {
     });
 
     // Derived state for filtered topics in form
-    const formTopics = topics.filter(t => t.subject._id === newPYQ.subject);
+    const formTopics = topics.filter(t => t.subject?._id === newPYQ.subject);
 
     useEffect(() => {
         fetchData();
@@ -39,15 +39,15 @@ const PYQs = () => {
 
     const fetchData = async () => {
         try {
-            const [pyqsRes, subjectsRes, videosRes, statsRes] = await Promise.all([
+            const [pyqsRes, subjectsRes, topicsRes, statsRes] = await Promise.all([
                 axios.get('http://localhost:5000/api/pyqs/video/all'), // Hack: need all PYQs endpoint or ignore
                 axios.get('http://localhost:5000/api/subjects'),
-                axios.get('http://localhost:5000/api/topics'), // Changed from videos
+                axios.get('http://localhost:5000/api/topics'),
                 axios.get('http://localhost:5000/api/pyqs/stats')
             ]);
 
             setSubjects(subjectsRes.data.data);
-            setVideos(videosRes.data.data);
+            setTopics(topicsRes.data.data);
             setStats(statsRes.data.data);
 
             if (subjectsRes.data.data.length > 0) {

@@ -78,31 +78,42 @@ const Revisions = () => {
     const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
     return (
-        <div className="h-[calc(100vh-6rem)] bg-[#050505] flex gap-6 p-6 animate-in fade-in duration-500 overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in duration-500 pb-12">
 
             {/* LEFT: CALENDAR PANEL */}
-            <div className="w-[420px] flex flex-col bg-[#111] border border-white/5 rounded-3xl p-6 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-transparent" />
+            <div className="w-full lg:w-[420px] shrink-0 flex flex-col bg-card border border-border rounded-[2rem] p-8 shadow-sm relative overflow-hidden h-fit">
+                {/* Visual Accent */}
+                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary/50 to-transparent" />
 
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                        <RotateCcw className="w-6 h-6 text-purple-500" />
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+                        <RotateCcw className="w-6 h-6 text-primary" />
                         {format(currentMonth, 'MMMM yyyy')}
                     </h2>
-                    <div className="flex gap-1">
-                        <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors"><ChevronLeft className="w-5 h-5" /></button>
-                        <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors"><ChevronRight className="w-5 h-5" /></button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                            className="p-2 hover:bg-secondary rounded-xl text-muted-foreground hover:text-foreground transition-all"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                            className="p-2 hover:bg-secondary rounded-xl text-muted-foreground hover:text-foreground transition-all"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-7 mb-2">
+                <div className="grid grid-cols-7 mb-4">
                     {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => (
-                        <div key={d} className="text-center text-xs font-bold text-slate-600 mb-2">{d}</div>
+                        <div key={d} className="text-center text-[10px] font-black text-muted-foreground uppercase tracking-widest">{d}</div>
                     ))}
                 </div>
-                <div className="grid grid-cols-7 gap-2 flex-1 content-start overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-7 gap-2">
                     {calendarDays.map((day) => {
                         const dateKey = format(day, 'yyyy-MM-dd');
                         const dayRevisions = revisionsByDate[dateKey] || [];
@@ -116,19 +127,19 @@ const Revisions = () => {
                                 key={day.toString()}
                                 onClick={() => setSelectedDate(day)}
                                 className={cn(
-                                    "h-10 w-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all relative group",
-                                    !isCurrentMonth && "opacity-20",
+                                    "h-10 w-full rounded-xl flex items-center justify-center text-xs font-bold transition-all relative group",
+                                    !isCurrentMonth && "opacity-10",
                                     isSelected
-                                        ? "bg-purple-600 text-white font-bold shadow-[0_0_15px_rgba(147,51,234,0.4)] scale-110"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white",
-                                    isToday(day) && !isSelected && "border border-purple-500/30 text-purple-400"
+                                        ? "bg-primary text-primary-foreground shadow-glow scale-110 z-10"
+                                        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                                    isToday(day) && !isSelected && "border border-primary/30 text-primary"
                                 )}
                             >
                                 {format(day, 'd')}
                                 {hasRevisions && !isSelected && (
                                     <div className={cn(
-                                        "absolute bottom-1 w-1.5 h-1.5 rounded-full",
-                                        isAllDone ? "bg-emerald-500" : "bg-purple-500/70"
+                                        "absolute bottom-1 w-1 h-1 rounded-full",
+                                        isAllDone ? "bg-emerald-500" : "bg-primary/70"
                                     )} />
                                 )}
                             </button>
@@ -138,55 +149,62 @@ const Revisions = () => {
             </div>
 
             {/* RIGHT: REVISIONS LIST PANEL */}
-            <div className="flex-1 flex flex-col bg-[#111] border border-white/5 rounded-3xl p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-                <div className="mb-8 z-10">
+            <div className="flex-1 flex flex-col bg-card border border-border rounded-[2rem] p-8 shadow-sm relative overflow-hidden">
+                <div className="mb-10">
                     <div className="flex items-center justify-between">
                         <div>
-                            <div className="text-slate-500 text-sm font-medium mb-1">{format(selectedDate, 'EEEE, MMMM do, yyyy')}</div>
-                            <h1 className="text-4xl font-bold text-white">
+                            <div className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                                {format(selectedDate, 'EEEE, MMMM do')}
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-black tracking-tight">
                                 {totalCount === 0 ? "No Revisions Due" : `${completedCount}/${totalCount} Completed`}
                             </h1>
                         </div>
                         {totalCount > 0 && (
-                            <div className="text-right">
-                                <div className="text-4xl font-black text-purple-500/20">{progress}%</div>
+                            <div className="hidden sm:block text-right">
+                                <div className="text-5xl font-black text-primary/10 select-none">{progress}%</div>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar z-10">
+                <div className="space-y-4">
                     {selectedDayRevisions.length === 0 ? (
-                        <div className="h-full flex flex-col items-center justify-center text-slate-600">
-                            <BrainCircuit className="w-16 h-16 mb-4 opacity-20" />
-                            <p className="text-xl font-medium">Clear Mind</p>
-                            <p className="text-sm mt-2">No revisions scheduled for this date.</p>
-                            <p className="text-xs text-slate-700 mt-4">Completion of topics creates spaced repetition tasks here automatically.</p>
+                        <div className="py-20 flex flex-col items-center justify-center text-center">
+                            <div className="p-6 bg-secondary rounded-full mb-6">
+                                <BrainCircuit className="w-12 h-12 text-primary/40" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-2">Clear Schedule</h3>
+                            <p className="text-muted-foreground max-w-xs text-sm">
+                                No revisions scheduled for this date. Topics you complete will appear here automatically based on spaced repetition.
+                            </p>
                         </div>
                     ) : (
                         selectedDayRevisions.map(rev => (
                             <div
                                 key={rev._id}
                                 className={cn(
-                                    "group p-5 rounded-2xl border transition-all flex items-center justify-between gap-4",
+                                    "group p-6 rounded-2xl border transition-all flex items-center justify-between gap-6",
                                     rev.completed
-                                        ? "bg-emerald-900/10 border-emerald-500/20 opacity-60"
-                                        : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
+                                        ? "bg-emerald-500/5 border-emerald-500/10 opacity-60"
+                                        : "bg-secondary/30 border-border hover:border-primary/30 hover:bg-secondary/50"
                                 )}
                             >
-                                <div>
-                                    <div className="flex items-center gap-2 mb-1">
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-3 mb-2">
                                         <span className={cn(
-                                            "text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider",
-                                            rev.revisionNumber === 1 ? "bg-blue-500/20 text-blue-400" : "bg-purple-500/20 text-purple-400"
+                                            "text-[10px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider border",
+                                            rev.revisionNumber === 1
+                                                ? "bg-primary/10 text-primary border-primary/20"
+                                                : "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
                                         )}>
                                             Rev #{rev.revisionNumber}
                                         </span>
-                                        <span className="text-xs text-slate-500">{rev.subject?.name}</span>
+                                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest truncate">{rev.subject?.name}</span>
                                     </div>
                                     <h3 className={cn(
-                                        "text-lg font-bold transition-colors",
-                                        rev.completed ? "text-emerald-400 line-through" : "text-white"
+                                        "text-lg font-bold transition-colors truncate",
+                                        rev.completed ? "text-emerald-600 line-through" : "text-foreground group-hover:text-primary"
                                     )}>
                                         {rev.topic?.name || rev.topic?.title || "Unknown Topic"}
                                     </h3>
@@ -195,14 +213,17 @@ const Revisions = () => {
                                 {!rev.completed ? (
                                     <button
                                         onClick={() => markComplete(rev._id)}
-                                        className="bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-xl transition-all shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:scale-105 active:scale-95"
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground p-3.5 rounded-2xl transition-all shadow-glow hover:scale-105 active:scale-95 shrink-0"
                                         title="Mark as Revised"
                                     >
-                                        <CheckCircle2 className="w-5 h-5" />
+                                        <CheckCircle2 className="w-6 h-6" />
                                     </button>
                                 ) : (
-                                    <div className="text-emerald-500 flex items-center gap-2 font-medium text-sm">
-                                        <CheckCircle2 className="w-5 h-5" /> Done
+                                    <div className="flex items-center gap-2 font-bold text-emerald-500 text-sm shrink-0">
+                                        <div className="p-2 bg-emerald-500/10 rounded-xl">
+                                            <CheckCircle2 className="w-5 h-5" />
+                                        </div>
+                                        <span className="hidden sm:inline">Done</span>
                                     </div>
                                 )}
                             </div>

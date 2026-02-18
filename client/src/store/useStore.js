@@ -27,7 +27,11 @@ const useStore = create(
     }),
     {
       name: 'gate-prep-storage', // name of the item in the storage (must be unique)
-      partialize: (state) => ({ isAuthenticated: state.isAuthenticated, userName: state.userName }), // Only persist auth
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        userName: state.userName,
+        isDarkMode: state.isDarkMode
+      }), // Persist auth, username, and theme
     }
   )
 );

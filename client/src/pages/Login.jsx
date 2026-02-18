@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store/useStore';
-import { Lock, ArrowRight } from 'lucide-react';
+import { Lock, ArrowRight, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-// WHY: Simple code-based login page
-// Focuses on speed and minimal distraction
 const Login = () => {
     const [code, setCode] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const login = useStore((state) => state.login);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        await new Promise(r => setTimeout(r, 400)); // brief haptic delay
         const success = login(code);
         if (success) {
             navigate('/');
@@ -20,52 +22,114 @@ const Login = () => {
             setError('Incorrect access code');
             setCode('');
         }
+        setIsLoading(false);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-                <div className="text-center mb-8">
-                    <div className="bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
-                        <Lock className="w-8 h-8 text-blue-500" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-slate-100 mb-2">GATE 2026</h1>
-                    <p className="text-slate-400">Enter access code to continue</p>
+        <div
+            className="min-h-screen flex items-center justify-center p-4"
+            style={{ background: 'var(--background)' }}
+        >
+            {/* Ambient orbs */}
+            <div style={{
+                position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0
+            }}>
+                <div style={{
+                    position: 'absolute', top: '15%', left: '20%',
+                    width: 340, height: 340,
+                    background: 'radial-gradient(circle, rgba(var(--primary-rgb), 0.12) 0%, transparent 70%)',
+                    borderRadius: '50%', filter: 'blur(40px)'
+                }} />
+                <div style={{
+                    position: 'absolute', bottom: '20%', right: '15%',
+                    width: 280, height: 280,
+                    background: 'radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%)',
+                    borderRadius: '50%', filter: 'blur(50px)'
+                }} />
+            </div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                className="glass-card relative z-10 w-full max-w-md p-10"
+            >
+                {/* Logo */}
+                <div className="text-center mb-10">
+                    <motion.div
+                        initial={{ scale: 0.7, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.15, duration: 0.4 }}
+                        className="neuo-card inline-flex items-center justify-center w-20 h-20 mx-auto mb-6"
+                        style={{ borderRadius: '50%' }}
+                    >
+                        <Zap
+                            className="w-9 h-9"
+                            style={{ color: 'var(--primary)' }}
+                            fill="currentColor"
+                        />
+                    </motion.div>
+
+                    <h1 className="text-4xl font-black tracking-tight mb-2"
+                        style={{ color: 'var(--foreground)' }}>
+                        GATE<span style={{ color: 'var(--primary)' }}>2026</span>
+                    </h1>
+                    <p className="text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>
+                        Enter your access code to continue
+                    </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <input
-                            type="password"
-                            value={code}
-                            onChange={(e) => {
-                                setCode(e.target.value);
-                                setError('');
-                            }}
-                            placeholder="Access Code"
-                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all text-center tracking-widest text-lg"
-                            autoFocus
-                        />
+                        <div className="relative">
+                            <Lock
+                                className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4"
+                                style={{ color: 'var(--muted-foreground)' }}
+                            />
+                            <input
+                                type="password"
+                                value={code}
+                                onChange={(e) => { setCode(e.target.value); setError(''); }}
+                                placeholder="••••••••"
+                                className="neuo-input w-full pl-11 pr-4 py-4 text-center tracking-[0.3em] text-lg font-bold"
+                                autoFocus
+                            />
+                        </div>
                         {error && (
-                            <p className="text-red-500 text-sm mt-2 text-center">{error}</p>
+                            <motion.p
+                                initial={{ opacity: 0, y: -6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-sm mt-2.5 text-center font-semibold"
+                                style={{ color: 'var(--destructive)' }}
+                            >
+                                {error}
+                            </motion.p>
                         )}
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2 group"
+                        disabled={isLoading}
+                        className="neuo-btn-primary w-full py-4 font-bold text-base flex items-center justify-center gap-2.5 group"
                     >
-                        Enter System
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        {isLoading ? (
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <>
+                                Enter System
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
                     </button>
                 </form>
 
-                <div className="mt-8 text-center">
-                    <p className="text-xs text-slate-600 uppercase tracking-widest">
+                <div className="mt-10 text-center">
+                    <p className="text-xs uppercase tracking-[0.25em] font-semibold"
+                        style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}>
                         Discipline • Consistency • Execution
                     </p>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
