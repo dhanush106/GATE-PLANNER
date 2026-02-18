@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import api from '../lib/api';
 import { Play, Pause, Timer } from 'lucide-react';
 import { formatDuration } from '../lib/utils';
 import { cn } from '../lib/utils';
@@ -34,14 +35,10 @@ const StudyTimer = () => {
             if (seconds > 60) { // Only log if > 1 minute
                 const endTime = new Date();
                 try {
-                    await fetch('http://localhost:5000/api/study-sessions', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            startTime,
-                            endTime,
-                            duration: Math.round(seconds / 60)
-                        })
+                    await api.post('/api/study-sessions', {
+                        startTime,
+                        endTime,
+                        duration: Math.round(seconds / 60)
                     });
                     // Reset after logging
                     setSeconds(0);

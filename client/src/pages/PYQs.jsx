@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import {
     BrainCircuit, Plus, Filter, CheckCircle2, XCircle, HelpCircle
 } from 'lucide-react';
@@ -40,10 +40,10 @@ const PYQs = () => {
     const fetchData = async () => {
         try {
             const [pyqsRes, subjectsRes, topicsRes, statsRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/pyqs/video/all'), // Hack: need all PYQs endpoint or ignore
-                axios.get('http://localhost:5000/api/subjects'),
-                axios.get('http://localhost:5000/api/topics'),
-                axios.get('http://localhost:5000/api/pyqs/stats')
+                api.get('/api/pyqs/video/all'),
+                api.get('/api/subjects'),
+                api.get('/api/topics'),
+                api.get('/api/pyqs/stats')
             ]);
 
             setSubjects(subjectsRes.data.data);
@@ -53,7 +53,7 @@ const PYQs = () => {
             if (subjectsRes.data.data.length > 0) {
                 const firstSubId = subjectsRes.data.data[0]._id;
                 setFilterSubject(firstSubId);
-                const listRes = await axios.get(`http://localhost:5000/api/pyqs/subject/${firstSubId}`);
+                const listRes = await api.get(`/api/pyqs/subject/${firstSubId}`);
                 setPyqs(listRes.data.data);
             }
 
@@ -68,7 +68,7 @@ const PYQs = () => {
         setFilterSubject(subject);
         if (subject) {
             try {
-                const res = await axios.get(`http://localhost:5000/api/pyqs/subject/${subject}`);
+                const res = await api.get(`/api/pyqs/subject/${subject}`);
                 setPyqs(res.data.data);
             } catch (error) { console.error(error); }
         } else {
@@ -79,14 +79,14 @@ const PYQs = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/pyqs', newPYQ);
+            await api.post('/api/pyqs', newPYQ);
             setIsModalOpen(false);
             setNewPYQ({ subject: '', topic: '', year: '', questionIdentifier: '', status: 'Attempted', notes: '' });
             // Refresh stats and list
-            const statsRes = await axios.get('http://localhost:5000/api/pyqs/stats');
+            const statsRes = await api.get('/api/pyqs/stats');
             setStats(statsRes.data.data);
             if (filterSubject === newPYQ.subject) {
-                const listRes = await axios.get(`http://localhost:5000/api/pyqs/subject/${filterSubject}`);
+                const listRes = await api.get(`/api/pyqs/subject/${filterSubject}`);
                 setPyqs(listRes.data.data);
             }
         } catch (error) {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import {
     RotateCcw, ChevronLeft, ChevronRight, CheckCircle2, Calendar,
     AlertTriangle, ArrowRight, BrainCircuit
@@ -30,7 +30,7 @@ const Revisions = () => {
             const start = startOfWeek(startOfMonth(currentMonth)).toISOString();
             const end = endOfWeek(endOfMonth(currentMonth)).toISOString();
 
-            const res = await axios.get(`http://localhost:5000/api/revisions/range?startDate=${start}&endDate=${end}`);
+            const res = await api.get(`/api/revisions/range?startDate=${start}&endDate=${end}`);
             setRevisions(res.data.data);
         } catch (error) {
             console.error("Error fetching revisions:", error);
@@ -41,7 +41,7 @@ const Revisions = () => {
 
     const markComplete = async (id) => {
         try {
-            await axios.put(`http://localhost:5000/api/revisions/${id}/complete`);
+            await api.put(`/api/revisions/${id}/complete`);
             // Optimistic update
             setRevisions(prev => prev.map(r => r._id === id ? { ...r, completed: true } : r));
         } catch (error) {

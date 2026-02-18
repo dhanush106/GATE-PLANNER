@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import {
     CheckCircle2, Plus, TrendingUp, AlertOctagon
 } from 'lucide-react';
@@ -37,8 +37,8 @@ const Mocks = () => {
     const fetchData = async () => {
         try {
             const [mocksRes, subjectsRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/mocks'),
-                axios.get('http://localhost:5000/api/subjects')
+                api.get('/api/mocks'),
+                api.get('/api/subjects')
             ]);
             setMocksData(mocksRes.data.data);
             setSubjects(subjectsRes.data.data);
@@ -63,7 +63,7 @@ const Mocks = () => {
                 // If empty, backend might just store empty array which is fine for Full Mock
             };
 
-            await axios.post('http://localhost:5000/api/mocks', payload);
+            await api.post('/api/mocks', payload);
             setIsModalOpen(false);
             setNewMock({
                 subjectsCovered: [],

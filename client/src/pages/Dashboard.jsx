@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import {
     CheckCircle2,
     RotateCcw,
@@ -27,7 +27,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/dashboard');
+                const res = await api.get('/api/dashboard');
                 setData(res.data.data);
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);

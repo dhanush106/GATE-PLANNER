@@ -123,9 +123,34 @@ const Login = () => {
                     </button>
                 </form>
 
-                <div className="mt-10 text-center">
-                    <p className="text-xs uppercase tracking-[0.25em] font-semibold"
-                        style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}>
+                <div className="mt-8 space-y-3">
+                    {/* Access mode hint */}
+                    <div
+                        className="rounded-xl p-3"
+                        style={{
+                            background: 'rgba(var(--primary-rgb), 0.04)',
+                            border: '1px solid rgba(var(--primary-rgb), 0.12)',
+                        }}
+                    >
+                        <p className="text-[10px] uppercase tracking-widest font-bold text-center mb-2"
+                            style={{ color: 'var(--muted-foreground)' }}>
+                            Access Modes
+                        </p>
+                        <div className="flex gap-2">
+                            <div className="flex-1 text-center py-2 rounded-lg text-[11px] font-semibold"
+                                style={{ background: 'rgba(var(--primary-rgb), 0.1)', color: 'var(--primary)' }}>
+                                🔑 Owner<br />
+                                <span className="text-[10px] opacity-70 font-normal">Full access</span>
+                            </div>
+                            <div className="flex-1 text-center py-2 rounded-lg text-[11px] font-semibold"
+                                style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
+                                👁 Viewer · TEST101<br />
+                                <span className="text-[10px] opacity-70 font-normal">Read-only</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-xs uppercase tracking-[0.25em] font-semibold text-center"
+                        style={{ color: 'var(--muted-foreground)', opacity: 0.45 }}>
                         Discipline • Consistency • Execution
                     </p>
                 </div>

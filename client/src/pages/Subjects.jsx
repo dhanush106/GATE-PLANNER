@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-// ... (imports remain)
-import { BookOpen, Calendar, Plus, Target, Zap, CheckCircle2, Pencil, Trash2, X } from 'lucide-react';
+import { BookOpen, Calendar, Plus, Target, Pencil, Trash2 } from 'lucide-react';
 import Modal from '../components/Modal';
-import { cn } from '../lib/utils'; // Keep existing
+import { cn } from '../lib/utils';
+import useViewer from '../lib/useViewer';
 
 // WHY: Execution-first Dashboard
 const Subjects = () => {
     const navigate = useNavigate();
+    const isViewer = useViewer();
     const [subjects, setSubjects] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -32,7 +33,7 @@ const Subjects = () => {
 
     const fetchSubjects = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/subjects');
+            const res = await api.get('/api/subjects');
             setSubjects(res.data.data);
         } catch (error) {
             console.error("Error fetching subjects:", error);
@@ -44,7 +45,7 @@ const Subjects = () => {
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/subjects', formData);
+            await api.post('/api/subjects', formData);
             setIsCreateModalOpen(false);
             setFormData({ name: '', weightage: '', targetDate: '' });
             fetchSubjects();
@@ -56,7 +57,7 @@ const Subjects = () => {
     const handleEdit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5000/api/subjects/${selectedSubject._id}`, formData);
+            await api.put(`/api/subjects/${selectedSubject._id}`, formData);
             setIsEditModalOpen(false);
             setSelectedSubject(null);
             setFormData({ name: '', weightage: '', targetDate: '' });
@@ -70,7 +71,7 @@ const Subjects = () => {
         e.stopPropagation();
         if (window.confirm("Are you sure? This will delete all tasks and stats for this subject.")) {
             try {
-                await axios.delete(`http://localhost:5000/api/subjects/${id}`);
+                await api.delete(`/api/subjects/${id}`);
                 fetchSubjects();
             } catch (error) {
                 console.error("Error deleting subject:", error);
@@ -99,7 +100,7 @@ const Subjects = () => {
             if (type === 'problem') payload.problemCount = 1;
             if (type === 'revision') payload.revisionCount = 1;
 
-            await axios.patch(`http://localhost:5000/api/subjects/${subjectId}/counters`, payload);
+            await api.patch(`/api/subjects/${subjectId}/counters`, payload);
             fetchSubjects();
 
             setTimeout(() => setAnimatingId(null), 500);
@@ -109,7 +110,7 @@ const Subjects = () => {
         }
     };
 
-    if (loading) return <div className="h-screen bg-[#050505] text-white flex items-center justify-center">Loading Engine...</div>;
+    if (loading) return <div className="h-screen flex items-center justify-center" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Loading Engine...</div>;
 
     return (
         <div className="min-h-[calc(100vh-6rem)] bg-[#050505] space-y-8 p-6 animate-in fade-in duration-500">
@@ -123,15 +124,17 @@ const Subjects = () => {
                     </h1>
                     <p className="text-slate-400 mt-1 font-medium">Focus on the process. Data doesn't lie.</p>
                 </div>
-                <button
-                    onClick={() => {
-                        setFormData({ name: '', weightage: '', targetDate: '' });
-                        setIsCreateModalOpen(true);
-                    }}
-                    className="z-10 bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-95 transition-all"
-                >
-                    <Plus className="w-5 h-5" /> Add Subject
-                </button>
+                {!isViewer && (
+                    <button
+                        onClick={() => {
+                            setFormData({ name: '', weightage: '', targetDate: '' });
+                            setIsCreateModalOpen(true);
+                        }}
+                        className="z-10 bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-95 transition-all"
+                    >
+                        <Plus className="w-5 h-5" /> Add Subject
+                    </button>
+                )}
             </div>
 
             {/* Subject Grid */}
@@ -142,21 +145,23 @@ const Subjects = () => {
                         onClick={() => navigate(`/subjects/${subject._id}`)}
                         className="bg-[#111] border border-white/5 rounded-3xl p-6 hover:border-emerald-500/30 transition-all group cursor-pointer relative overflow-hidden hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]"
                     >
-                        {/* Edit/Delete Actions (Absolute Top Right) */}
-                        <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                                onClick={(e) => openEditModal(e, subject)}
-                                className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition"
-                            >
-                                <Pencil className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={(e) => handleDelete(e, subject._id)}
-                                className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-900/20 transition"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        </div>
+                        {/* Edit/Delete Actions — hidden for viewers */}
+                        {!isViewer && (
+                            <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={(e) => openEditModal(e, subject)}
+                                    className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition"
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={(e) => handleDelete(e, subject._id)}
+                                    className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-900/20 transition"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
 
                         {/* Progress Bar Background */}
                         <div className="absolute top-0 left-0 h-1 bg-white/5 w-full">
@@ -185,55 +190,28 @@ const Subjects = () => {
                             </div>
                         </div>
 
-                        {/* Quick Actions - THE "AIR 1" GRIND */}
+                        {/* Quick Actions — click-to-increment for owner, display-only for viewer */}
                         <div className="grid grid-cols-3 gap-3">
-                            <button
-                                onClick={(e) => quickIncrement(e, subject._id, 'pyq')}
-                                className={cn(
-                                    "relative overflow-hidden bg-[#050505] border border-white/5 p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all group/btn",
-                                    animatingId === `${subject._id}-pyq` && "ring-2 ring-emerald-500"
-                                )}
-                            >
-                                <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 font-bold">PYQs</div>
-                                <div className="text-xl font-bold text-white group-hover/btn:text-emerald-400">
-                                    {subject.totalPYQs}
+                            {[['pyq', 'PYQs', subject.totalPYQs, 'emerald'], ['problem', 'Probs', subject.totalProblems, 'cyan'], ['revision', 'Revs', subject.totalRevisions, 'purple']].map(([type, label, count, color]) => (
+                                <div
+                                    key={type}
+                                    onClick={!isViewer ? (e) => quickIncrement(e, subject._id, type) : undefined}
+                                    className={cn(
+                                        "relative overflow-hidden bg-[#050505] border border-white/5 p-3 rounded-xl transition-all group/btn",
+                                        !isViewer && `hover:bg-${color}-500/10 hover:border-${color}-500/30 cursor-pointer`,
+                                        isViewer && 'cursor-default',
+                                        animatingId === `${subject._id}-${type}` && `ring-2 ring-${color}-500`
+                                    )}
+                                >
+                                    <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 font-bold">{label}</div>
+                                    <div className={`text-xl font-bold text-white ${!isViewer ? `group-hover/btn:text-${color}-400` : ''}`}>{count}</div>
+                                    {!isViewer && (
+                                        <div className="absolute top-2 right-2 opacity-0 group-hover/btn:opacity-100 transition-opacity">
+                                            <Plus className={`w-3 h-3 text-${color}-500`} />
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="absolute top-2 right-2 opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                                    <Plus className="w-3 h-3 text-emerald-500" />
-                                </div>
-                            </button>
-
-                            <button
-                                onClick={(e) => quickIncrement(e, subject._id, 'problem')}
-                                className={cn(
-                                    "relative overflow-hidden bg-[#050505] border border-white/5 p-3 rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/30 transition-all group/btn",
-                                    animatingId === `${subject._id}-problem` && "ring-2 ring-cyan-500"
-                                )}
-                            >
-                                <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 font-bold">Probs</div>
-                                <div className="text-xl font-bold text-white group-hover/btn:text-cyan-400">
-                                    {subject.totalProblems}
-                                </div>
-                                <div className="absolute top-2 right-2 opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                                    <Plus className="w-3 h-3 text-cyan-500" />
-                                </div>
-                            </button>
-
-                            <button
-                                onClick={(e) => quickIncrement(e, subject._id, 'revision')}
-                                className={cn(
-                                    "relative overflow-hidden bg-[#050505] border border-white/5 p-3 rounded-xl hover:bg-purple-500/10 hover:border-purple-500/30 transition-all group/btn",
-                                    animatingId === `${subject._id}-revision` && "ring-2 ring-purple-500"
-                                )}
-                            >
-                                <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 font-bold">Revs</div>
-                                <div className="text-xl font-bold text-white group-hover/btn:text-purple-400">
-                                    {subject.totalRevisions}
-                                </div>
-                                <div className="absolute top-2 right-2 opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                                    <Plus className="w-3 h-3 text-purple-500" />
-                                </div>
-                            </button>
+                            ))}
                         </div>
                     </div>
                 ))}

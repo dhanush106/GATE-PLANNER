@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import {
     ChevronLeft, ChevronRight, Plus, CheckSquare, Square,
     Calendar as CalendarIcon, Target, AlertTriangle, Flame,
@@ -38,8 +38,8 @@ const SubjectBoard = () => {
     const fetchData = async () => {
         try {
             const [subRes, topicsRes] = await Promise.all([
-                axios.get(`http://localhost:5000/api/subjects/${id}`),
-                axios.get(`http://localhost:5000/api/topics?subject=${id}`)
+                api.get(`/api/subjects/${id}`),
+                api.get(`/api/topics?subject=${id}`)
             ]);
             setSubject(subRes.data.data);
             setTopics(topicsRes.data.data);
@@ -95,7 +95,7 @@ const SubjectBoard = () => {
     const createTopic = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/topics', {
+            await api.post('/api/topics', {
                 subject: id,
                 name: newTopicName,
                 assignedDate: selectedDate
@@ -111,7 +111,7 @@ const SubjectBoard = () => {
     const handleUpdateTopic = async (e) => {
         e.preventDefault();
         try {
-            await axios.patch(`http://localhost:5000/api/topics/${editingTopic._id}`, {
+            await api.patch(`/api/topics/${editingTopic._id}`, {
                 name: editingTopic.name
             });
             setIsEditModalOpen(false);
@@ -126,7 +126,7 @@ const SubjectBoard = () => {
         e.stopPropagation();
         if (window.confirm("Delete this task?")) {
             try {
-                await axios.delete(`http://localhost:5000/api/topics/${topicId}`);
+                await api.delete(`/api/topics/${topicId}`);
                 fetchData();
             } catch (error) {
                 console.error("Error deleting task:", error);
@@ -147,7 +147,7 @@ const SubjectBoard = () => {
         setTopics(updatedTopics);
 
         try {
-            await axios.patch(`http://localhost:5000/api/topics/${topic._id}`, {
+            await api.patch(`/api/topics/${topic._id}`, {
                 isCompleted: !topic.isCompleted
             });
         } catch (error) {
